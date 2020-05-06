@@ -17,4 +17,10 @@ Need to install the following with pip to be able to run files
 - Castling, En Passant
 - Improvement of heuristic function, should take into account not only pieces value, but also its position on board (i.e knight should be more towards the center so they have more options for move)
 - Fix endgame strategy for AI, weird bug where when i just have the white king on the board, the AI doesnt attack it until i bring the king closer to a piece (could be tree depth issue?)
-# ChessAI
+
+
+# Data
+
+Data for this project can be found at the following link: matches are from 2008-2016
+
+https://www.ficsgames.org
