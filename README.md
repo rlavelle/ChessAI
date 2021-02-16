@@ -1,26 +1,58 @@
 # Python Chess Game 
 
-Run the player vs player file to play against another person
+An interactive python chess game made using pygame. The AI uses the minimax algorithm along with the alpha-beta pruning optimization. As of right now the heuristic is very basic.
 
-Run the player vs computer file to play against the given ai
+## requirements
 
-Uses an mini-max alpha-beta pruning approach with a simple (to be updated) heuristic based on piece values
+Make sure you are using python3 and set up a virtual environment by running
 
-# Dependencies
+```
+python3 -m venv env
+```
 
-Need to install the following with pip to be able to run files
+Then activate the environment
 
-- pygame, copy, subprocess
+```
+source env/bin/activate
+```
 
-# TODOs
+Then go ahead and install the requirements
+
+```
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+```
+
+## running the program
+
+If you want to play against a friend, go into the src directory and run:
+
+```
+python3 player_vs_player.py
+```
+
+If you want to play against the AI run:
+
+```
+python3 player_vs_computer.py
+```
+
+## Optimizations and future improvements
+
+### Game improvements
 
 - Castling, En Passant
-- Improvement of heuristic function, should take into account not only pieces value, but also its position on board (i.e knight should be more towards the center so they have more options for move)
-- Fix endgame strategy for AI, weird bug where when i just have the white king on the board, the AI doesnt attack it until i bring the king closer to a piece (could be tree depth issue?)
+- make it so clicking on a piece can be unselected if you want to move another piece
+- when clicking a piece, show all available moves 
 
+### AI improvements
+- Improvement of heuristic function, should take into account not only pieces value, but also its position on board (i.e knight should be more towards the center so they have more options for moves)
+- Use professional chess game data to train a feed forward neural network to act as the heuristic
 
-# Data
+## data
 
-Data for this project can be found at the following link: matches are from 2008-2016
+Data for this project can be found at the following [here](https://www.ficsgames.org): matches are from 2008-2016
 
-https://www.ficsgames.org
+# Future of the project
+
+In the future I want to write a version of this program that is only the AI file. Once I find a suitable javascript implementation of in-browser chess, from there I want to re-write the AI file to be wrapped in an API that can take in a board, and respond with a json file of the next move. This way the game can be added to [my website](rowanlavelle.com). Along with this, I think minimax / alpha-beta pruning can be optimized even further using dynamic programing and iterative deepening search (IDS) instead of just a singular depth limit, with IDS stopping at some request time limit.
