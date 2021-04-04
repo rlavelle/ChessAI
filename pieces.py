@@ -15,7 +15,8 @@ class ChessPiece(ABC):
         # self.position = (x, y, convertToNotation("X", x, y))
         
         self.designation = "X"
-        self.position = (row,col)
+        self.row = row
+        self.col = col
         self.color = color # True=white, False=black
         self.value = 0
         self.enemy_pieces = BLACK_PIECES if color else WHITE_PIECES
@@ -23,6 +24,10 @@ class ChessPiece(ABC):
     
     @abstractmethod
     def getMoves(self, board, row:int, col:int):
+        pass
+
+    @abstractmethod
+    def canThreaten(self, board, row:int, col:int):
         pass
 
 class Pawn(ChessPiece):
@@ -52,6 +57,7 @@ class Pawn(ChessPiece):
                 # if the state is a np array of class objects, wed have to deep copy each
                 # then instead of placing self.designation in the array
                 # we would need to place a copy of this class (self) with updated row,col
+                #NOTE: perhaps only list available moves and use successor to make them from the board class?
                 child = np.copy(state)
                 child[pos],child[i] = '.',self.designation
                 moves.append(child)
@@ -65,7 +71,7 @@ class Pawn(ChessPiece):
                 #when the pawn reaches the end it becomes a queen
                 # TODO: make this smarter sometimes a Knight will be better for instance check mate
                 if self.row+r == 0: 
-                    p = 'q'
+                    p = 'q' #TODO create new queen (further evidence that this should probably be in board class)
                 if self.row+r == 7: 
                     p = 'Q'
 
