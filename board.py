@@ -3,6 +3,7 @@
 
 import numpy as np
 from functions import *
+import pieces
 
 class Board:
 
@@ -30,9 +31,9 @@ class Board:
         for l in range(len(self.state)):
             if self.state[l] != ".":
                 if self.state[l].lower() != self.state[l]:
-                    self.piece_locs[True][tuple(i_to_rc(l))] = self.state[l]
+                    self.piece_locs[True][tuple(i_to_rc(l))] = (self.state[l], pieces.newPiece(self.state[l], i_to_rc(l)))
                 else:
-                    self.piece_locs[False][tuple(i_to_rc(l))] = self.state[l]
+                    self.piece_locs[False][tuple(i_to_rc(l))] = (self.state[l], pieces.newPiece(self.state[l], i_to_rc(l)))
     
     def find_piece(self, p, index = 0):
         return np.where(self.state == p)[index]
@@ -40,9 +41,20 @@ class Board:
     def successor(self):
         pass
 
-    def makeMove(self, move:str):
-        pass
-    
+    def makeMove(self, oldLoc:tuple, newLoc:tuple):
+        temp = self.state[rc_to_i(newLoc[0], newLoc[1])]
+        if temp == ".":
+            self.state[rc_to_i(newLoc[0], newLoc[1])] = self.state[rc_to_i(oldLoc[0], oldLoc[1])]
+            self.state[rc_to_i(oldLoc[0], oldLoc[1])] = temp
+        else:
+            self.state[rc_to_i(newLoc[0], newLoc[1])] = self.state[rc_to_i(oldLoc[0], oldLoc[1])]
+            self.state[rc_to_i(oldLoc[0], oldLoc[1])] = "."
+            self.piece_locs[not self.turn].pop(newLoc)
+        self.piece_locs[self.turn][newLoc] = (self.piece_locs[self.turn][oldLoc][0], self.piece_locs[self.turn][oldLoc][1])
+        self.piece_locs[self.turn].pop(oldLoc)
+        self.piece_locs[self.turn][newLoc][1].setLocation(newLoc[0], newLoc[1])
+        self.turn = not self.turn
+
     @property
     def isTerminal(self):
         if np.count_nonzero(self.state == 'k') == 0: return 1 if self.turn else 0

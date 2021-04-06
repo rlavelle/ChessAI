@@ -3,7 +3,7 @@
 
 from abc import ABC, abstractmethod
 import numpy as np
-from board import Board
+import board
 from functions import *
 
 
@@ -26,14 +26,18 @@ class ChessPiece(ABC):
     def getMoves(self, board, row:int, col:int):
         pass
 
-    @abstractmethod
-    def canThreaten(self, board, row:int, col:int):
-        pass
+    def setLocation(self, row:int, col:int):
+        self.row = row
+        self.col = col
+
+    # @abstractmethod
+    # def canThreaten(self, board, row:int, col:int):
+    #     pass
 
 class Pawn(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
-        super(color, row, self.col)
+        super().__init__(color, row, col)
         self.designation = "P" if color else "p"
         self.value = 1
 
@@ -58,40 +62,44 @@ class Pawn(ChessPiece):
                 # then instead of placing self.designation in the array
                 # we would need to place a copy of this class (self) with updated row,col
                 #NOTE: perhaps only list available moves and use successor to make them from the board class?
-                child = np.copy(state)
-                child[pos],child[i] = '.',self.designation
+                child = ((self.row, self.col), (self.row+2*r, self.col))
+                # child = np.copy(state)
+                # child[pos],child[i] = '.',self.designation
                 moves.append(child)
 
         # regular move forward one spot
         if valid_index((self.row+r,self.col)):
             i = rc_to_i(self.row+r,self.col)
             if state[i] == '.': 
-                child = np.copy(state)
+                # child = np.copy(state)
 
                 #when the pawn reaches the end it becomes a queen
                 # TODO: make this smarter sometimes a Knight will be better for instance check mate
-                if self.row+r == 0: 
-                    p = 'q' #TODO create new queen (further evidence that this should probably be in board class)
-                if self.row+r == 7: 
-                    p = 'Q'
+                # if self.row+r == 0: 
+                #     p = 'q' #TODO create new queen (further evidence that this should probably be in board class)
+                # if self.row+r == 7: 
+                #     p = 'Q'
 
-                child[pos],child[i] = '.',self.designation
+                # child[pos],child[i] = '.',self.designation
+                child = ((self.row, self.col), (self.row+r, self.col))
                 moves.append(child)
 
         # pawn can move diagonal right if it can capture a piece
         if valid_index((self.row+r,self.col+1)):
             i = rc_to_i(self.row+r,self.col+1)
             if state[i] in self.enemy_pieces:
-                child = np.copy(state)
-                child[pos],child[i] = '.',self.designation
+                child = ((self.row, self.col), (self.row+r, self.col+1))
+                # child = np.copy(state)
+                # child[pos],child[i] = '.',self.designation
                 moves.insert(0, child)
 
         # pawn can move diagonal left if it can capture a piece
         if valid_index((self.row+r,self.col-1)):
             i = rc_to_i(self.row+r,self.col-1)
             if state[i] in self.enemy_pieces:
-                child = np.copy(state)
-                child[pos],child[i] = '.',self.designation
+                child = ((self.row, self.col), (self.row+r, self.col-1))
+                # child = np.copy(state)
+                # child[pos],child[i] = '.',self.designation
                 moves.insert(0, child)
         
         return moves
@@ -99,7 +107,7 @@ class Pawn(ChessPiece):
 class Knight(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
-        super(color, self.row, self.col)
+        super().__init__(color, row, col)
         self.designation = "N" if color else "n"
         self.value = 3
 
@@ -125,8 +133,10 @@ class Knight(ChessPiece):
                 # skip if well land on our own piece
                 if state[i] in self.own_pieces: continue
 
-                child = np.copy(state)
-                child[pos],child[i] = '.',self.designation
+                # child = np.copy(state)
+                # child[pos],child[i] = '.',self.designation
+                child = ((self.row, self.col), move)
+
                 if state[i] == '.':
                     moves.append(child)
                 elif state[i] in self.enemy_pieces:
@@ -137,7 +147,7 @@ class Knight(ChessPiece):
 class Bishop(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
-        super(color, self.row, self.col)
+        super().__init__(color, row, col)
         self.designation = "B" if color else "b"
         self.value = 3
 
@@ -158,8 +168,9 @@ class Bishop(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row-k, self.col-k))
 
             # open space!
             if state[i] == '.': 
@@ -181,8 +192,9 @@ class Bishop(ChessPiece):
             if state[i] in self.own_pieces: break
             # we hit a piece we can take, add and stop
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row-k, self.col+k))
 
             # open space!
             if state[i] == '.': 
@@ -202,8 +214,9 @@ class Bishop(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row+k, self.col-k))
 
             # open space!
             if state[i] == '.': 
@@ -224,8 +237,10 @@ class Bishop(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row+k, self.col+k))
+
             # open space!
             if state[i] == '.': 
                 moves.append(child)
@@ -240,7 +255,7 @@ class Bishop(ChessPiece):
 class Rook(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
-        super(color, self.row, self.col)
+        super().__init__(color, row, col)
         self.designation = "R" if color else "r"
         self.value = 5
 
@@ -259,8 +274,9 @@ class Rook(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (r, self.col))
 
             # open space!
             if state[i] == '.': 
@@ -277,8 +293,9 @@ class Rook(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (r, self.col))
 
             # open space!
             if state[i] == '.': 
@@ -295,8 +312,9 @@ class Rook(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row, c))
 
             # open space!
             if state[i] == '.': 
@@ -313,8 +331,9 @@ class Rook(ChessPiece):
             i = rc_to_i(self.row,c)
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row, c))
 
             # open space!
             if state[i] == '.': 
@@ -329,7 +348,7 @@ class Rook(ChessPiece):
 class Queen(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
-        super(color, self.row, self.col)
+        super().__init__(color, row, col)
         self.designation = "Q" if color else "q"
         self.value = 9
 
@@ -351,8 +370,9 @@ class Queen(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row-k, self.col-k))
 
             # open space!
             if state[i] == '.': 
@@ -374,8 +394,9 @@ class Queen(ChessPiece):
             if state[i] in self.own_pieces: break
             # we hit a piece we can take, add and stop
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row-k, self.col+k))
 
             # open space!
             if state[i] == '.': 
@@ -395,8 +416,9 @@ class Queen(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row+k, self.col-k))
 
             # open space!
             if state[i] == '.': 
@@ -417,8 +439,10 @@ class Queen(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row+k, self.col+k))
+
             # open space!
             if state[i] == '.': 
                 moves.append(child)
@@ -436,8 +460,9 @@ class Queen(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (r, self.col))
 
             # open space!
             if state[i] == '.': 
@@ -454,8 +479,9 @@ class Queen(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (r, self.col))
 
             # open space!
             if state[i] == '.': 
@@ -472,8 +498,9 @@ class Queen(ChessPiece):
             # we hit a blocker, stop
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row, c))
 
             # open space!
             if state[i] == '.': 
@@ -490,8 +517,9 @@ class Queen(ChessPiece):
             i = rc_to_i(self.row,c)
             if state[i] in self.own_pieces: break
 
-            child = np.copy(state)
-            child[pos],child[i] = '.',self.designation
+            # child = np.copy(state)
+            # child[pos],child[i] = '.',self.designation
+            child = ((self.row, self.col), (self.row, c))
 
             # open space!
             if state[i] == '.': 
@@ -506,7 +534,7 @@ class Queen(ChessPiece):
 class King(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
-        super(color, self.row, self.col)
+        super().__init__(color, row, col)
         self.designation = "K" if color else "k"
         self.value = 10000
 
@@ -531,11 +559,45 @@ class King(ChessPiece):
                 # skip move if we land on our own piece
                 if state[i] in self.own_pieces: continue
 
-                child = np.copy(state)
-                child[pos],child[i] = '.',self.designation
+                # child = np.copy(state)
+                # child[pos],child[i] = '.',self.designation
+                child = ((self.row, self.col), move)
+
                 if state[i] == '.':
                     moves.append(child)
                 elif state[i] in self.enemy_pieces:
                     moves.insert(0, child)
         
         return moves
+
+def newPiece(designation:str, rc:tuple):
+    if designation.lower() == designation:
+        if designation == "p":
+            return Pawn(False, rc[0], rc[1])
+        elif designation == "r":
+            return Rook(False, rc[0], rc[1])
+        elif designation == "n":
+            return Knight(False, rc[0], rc[1])
+        elif designation == "b":
+            return Bishop(False, rc[0], rc[1])
+        elif designation == "q":
+            return Queen(False, rc[0], rc[1])
+        elif designation == "k":
+            return King(False, rc[0], rc[1])
+        else:
+            print("ERROR: invalid piece designation")
+    else:
+        if designation == "P":
+            return Pawn(True, rc[0], rc[1])
+        elif designation == "R":
+            return Rook(True, rc[0], rc[1])
+        elif designation == "N":
+            return Knight(True, rc[0], rc[1])
+        elif designation == "B":
+            return Bishop(True, rc[0], rc[1])
+        elif designation == "Q":
+            return Queen(True, rc[0], rc[1])
+        elif designation == "K":
+            return King(True, rc[0], rc[1])
+        else:
+            print("ERROR: invalid piece designation")
