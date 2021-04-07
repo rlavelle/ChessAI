@@ -18,10 +18,13 @@ class Board:
 
     def __str__(self):
         s = ""
+        s += "    a b c d e f g h\n\n"
         for row in range(ROWS):
+            s += str(row+1)+"   "
             for col in range(COLS):
-                s += self.state[rc_to_i(row,col)]
-            s += "\n"
+                s += self.state[rc_to_i(row,col)] + " "
+            s += f"  {row+1}\n"
+        s += "\n    a b c d e f g h"
         return s
 
     def init_board(self):
@@ -42,17 +45,17 @@ class Board:
         pass
 
     def makeMove(self, oldLoc:tuple, newLoc:tuple):
-        temp = self.state[rc_to_i(newLoc[0], newLoc[1])]
+        temp = self.state[rc_to_i(*newLoc)]
         if temp == ".":
-            self.state[rc_to_i(newLoc[0], newLoc[1])] = self.state[rc_to_i(oldLoc[0], oldLoc[1])]
-            self.state[rc_to_i(oldLoc[0], oldLoc[1])] = temp
+            self.state[rc_to_i(*newLoc)] = self.state[rc_to_i(*oldLoc)]
+            self.state[rc_to_i(*oldLoc)] = temp
         else:
-            self.state[rc_to_i(newLoc[0], newLoc[1])] = self.state[rc_to_i(oldLoc[0], oldLoc[1])]
-            self.state[rc_to_i(oldLoc[0], oldLoc[1])] = "."
+            self.state[rc_to_i(*newLoc)] = self.state[rc_to_i(*oldLoc)]
+            self.state[rc_to_i(*oldLoc)] = "."
             self.piece_locs[not self.turn].pop(newLoc)
         self.piece_locs[self.turn][newLoc] = (self.piece_locs[self.turn][oldLoc][0], self.piece_locs[self.turn][oldLoc][1])
         self.piece_locs[self.turn].pop(oldLoc)
-        self.piece_locs[self.turn][newLoc][1].setLocation(newLoc[0], newLoc[1])
+        self.piece_locs[self.turn][newLoc][1].setLocation(*newLoc)
         self.turn = not self.turn
 
     @property
