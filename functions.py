@@ -17,6 +17,16 @@ def valid_index(pos):
 # Basic notation conversion functions to translate to/from strings
 # TODO: maybe to save on conversion runtime, we convert directly from chess notation into modified 1-D array notation
 #       @Rowan your thoughts?
+#
+# need to add notations for :
+# O-O for kingside castle
+# O-O-O for queen side castle
+# captures -> Bxe5 for Bishop takes e5
+# pawn captures -> exd6 for pawn on e takes d6
+# disambiguating moves -> R1a3 for Rook at row 1 move to a3
+#                         Rdf8 for Rook at col d move to f8
+#                         Qh4e1 for queen at h4 to e1
+#                         Qh4xe1 for queen at h4 takes piece at e1
 def convertFromNotation(move:str):
     yConversion = {
         "a":0,
