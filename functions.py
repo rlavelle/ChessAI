@@ -4,6 +4,9 @@ COLS = 8
 WHITE_PIECES = 'NPRBQK'
 BLACK_PIECES = 'nprbqk'
 
+WHITE = True
+BLACK = False
+
 def rc_to_i(r,c):
     return r*ROWS + c
 def i_to_rc(i):
