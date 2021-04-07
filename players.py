@@ -3,6 +3,7 @@
 
 from board import Board
 import random
+from pruning import PruningCaseBase
 
 class RandomPlayer:
 
@@ -15,3 +16,12 @@ class RandomPlayer:
             possibleMoves = possibleMoves + board.piece_locs[self.color][pieceLoc][1].getMoves(board)
         move = random.sample(possibleMoves, 1)[0]
         board.makeMove(tuple(move)[0], tuple(move)[1])
+
+class CBRPlayer:
+
+    def __init__(self, color:bool):
+        self.color = color
+        self.cb = PruningCaseBase()
+
+    def makeMoe(self, board:Board):
+        pass

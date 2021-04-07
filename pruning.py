@@ -4,14 +4,70 @@
 from cbr import Feature, Case, CaseBase
 from board import Board
 from functions import *
+from sys import maxsize
+
+class PruningCase(Case):
+
+    def __init__(self, output = None):
+        super().__init__(output)
+
+    #NOTE: in this function, otherCase is actually a Board object for querying
+    def getDifference(self, otherCase):
+        differences = {}
+        for featureName in self.features.keys():
+            differences[featureName] = self.features[featureName].similarity(otherCase)
+        return differences
+
+
+class PruningCaseBase(CaseBase):
+
+    def __init__(self):
+        super().__init__()
+        pinnedCase = PruningCase()
+        pinnedCase.addFeature(Feature(0, "pinned pieces", pinned))
+        self.addCase(pinnedCase)
+
+    def getUnconsideredPieces(self, query):
+        unconsideredPieces = []
+        for caseHash in self.cases.keys():
+            pieces = self.getCase(caseHash).getDifference(query)
+            for featureName in pieces.keys():
+                for piece in pieces[featureName]:
+                    unconsideredPieces.append(piece)
+        return unconsideredPieces
+
+#==================================
+# Cases
+#==================================
+
+#TODO: consider a moveablePieces field for board to avoid double-counting when applying CBR
+
+#If a piece is pinned to a more valuable piece, do not move it
+def pinned(board:Board):
+    unconsideredPieces = []
+    for opposingPieceLoc in board.piece_locs[not board.turn].keys():
+        for potentialThreatenedPiece in board.piece_locs[board.turn].keys():
+            for potentialPinnedPiece in board.piece_locs[board.turn].keys():
+                valuePieceDist = board.piece_locs[opposingPieceLoc][1].canThreaten(potentialThreatenedPiece[0], potentialThreatenedPiece[1])
+                pinnedPieceDist = board.piece_locs[opposingPieceLoc][1].canThreaten(potentialPinnedPiece[0], potentialPinnedPiece[1])
+                if valuePieceDist is None or pinnedPieceDist is None:
+                    continue
+                else:
+                    if valuePieceDist[0]-pinnedPieceDist[0] >= 0 and valuePieceDist[1]-pinnedPieceDist[1] >= 0 and \
+                        board.piece_locs[potentialPinnedPiece][1].value < board.piece_locs[potentialThreatenedPiece][1].value:
+                        unconsideredPieces.append(potentialPinnedPiece)
+    return unconsideredPieces
+
+
+
+
+
 
 def analyze(board:Board):
 
     cases = []
 
-    #==================================
-    # Cases
-    #==================================
+    
 
     # If the king has castled, don't move any pawns in front of it
     if board.turn:

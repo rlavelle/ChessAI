@@ -33,7 +33,7 @@ class Case:
     def getOutput(self):
         return self.output
 
-    def getDifference(self, otherCase:Case):
+    def getDifference(self, otherCase):
         differences = {}
         for featureName in self.features.keys():
             differences[featureName] = self.features[featureName].similarity(otherCase.features[featureName])
@@ -46,13 +46,6 @@ class CaseBase:
     
     def __init__(self):
         self.cases = {}
-    
-    def retrieve(self, caseKey):
-        try:
-            return self.cases[caseKey]
-        except:
-            print("That case does not exist")
-            return
 
     def addCase(self, case:Case):
         self.cases[hash(case)] = case
@@ -60,7 +53,7 @@ class CaseBase:
     def getCase(self, caseKey):
         return self.cases[caseKey]
 
-    def getKNN(self, k:int, query:Case):
+    def getKNN(self, k:int, query):
         neighbors = [(None,sys.maxsize)] * k
         for caseHash in self.cases.keys():
             distance = 0.0
