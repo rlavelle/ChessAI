@@ -53,4 +53,14 @@ def analyze(board:Board):
 
     # OTHER IDEAS...?
     # Don't double pawns
+    #
     # If the king has not yet moved (is in the center of the board), don't move it (unless castling)
+    #
+    # If a possible piece has something it can capture, make sure it has backup / is a fair trade
+    #
+    # if a Bishop/Queen/Rook has multiple open spaces that it can move, only consider spaces where it
+    #       a) takes a piece
+    #       b) is then in a position to capture a piece
+    #       c) is then in a position to protect a piece
+    # (this should hopefully eliminate checking moves where B/Q/R end up in empty space)
+    # (maybe this will cut a branching factor of 8 down to 2/3 for pieces like this)
