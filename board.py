@@ -26,6 +26,9 @@ class Board:
             s += f"  {row+1}\n"
         s += "\n    a b c d e f g h"
         return s
+    
+    def get(self, loc):
+        return self.piece_locs[self.turn][loc]
 
     def init_board(self):
         self.state = np.array([p for p in "RNBQKBNRPPPPPPPP................................pppppppprnbqkbnr"])
