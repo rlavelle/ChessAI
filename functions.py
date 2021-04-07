@@ -29,9 +29,9 @@ def convertFromNotation(move:str):
         "h":7
     }
     if len(move) == 3:
-        return (move[0], int(move[2])-1, yConversion[int(move[1])])
+        return (move[0], int(move[2])-1, yConversion[move[1]])
     else:
-        return ("P", int(move[2]), yConversion[int(move[1])])
+        return ("P", int(move[1])-1, yConversion[move[0]])
 def convertToNotation(pieceDesignation:str, x:int, y:int):
     yConversion = {
         0:"a",
