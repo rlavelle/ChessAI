@@ -3,10 +3,11 @@
 
 from players import RandomPlayer
 from board import Board
+from functions import *
 import sys
 
 def play(white = None, black = None):
-    board = Board(True)
+    board = Board(turn=WHITE)
     turnPlayer = True
     while board.isTerminal == -1:
         if turnPlayer and white != None:
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     if sys.argv[1] == "1":
         if sys.argv[2] == "w":
-            play(RandomPlayer(True), None)
+            play(RandomPlayer(WHITE), None)
         else:
-            play(None, RandomPlayer(False))
+            play(None, RandomPlayer(BLACK))
             
