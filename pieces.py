@@ -30,9 +30,9 @@ class ChessPiece(ABC):
         self.row = row
         self.col = col
 
-    # @abstractmethod
-    # def canThreaten(self, board, row:int, col:int):
-    #     pass
+    @abstractmethod
+    def canThreaten(self, row:int, col:int):
+        pass
 
 class Pawn(ChessPiece):
 
@@ -104,6 +104,12 @@ class Pawn(ChessPiece):
         
         return moves
 
+    def canThreaten(self, row:int, col:int):
+        r = 1 if self.color else -1
+        if row == self.row+r and (col == self.col-1 or col == self.col+1):
+            return (abs(self.row - row), abs(self.col - col))
+
+
 class Knight(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
@@ -143,6 +149,12 @@ class Knight(ChessPiece):
                     moves.insert(0, child)
         
         return moves
+
+    def canThreaten(self, row:int, col:int):
+        rowDiff = abs(self.row - row)
+        colDiff = abs(self.col - col)
+        if (rowDiff == 2 and colDiff == 1) or (rowDiff == 1 and colDiff == 2):
+            return (rowDiff, colDiff)
 
 class Bishop(ChessPiece):
 
@@ -251,6 +263,12 @@ class Bishop(ChessPiece):
             k += 1
         
         return moves
+    
+    def canThreaten(self, row:int, col:int):
+        rowDiff = abs(self.row - row)
+        colDiff = abs(self.col - col)
+        if rowDiff == colDiff:
+            return (rowDiff, colDiff)
 
 class Rook(ChessPiece):
 
@@ -344,6 +362,12 @@ class Rook(ChessPiece):
                 break
         
         return moves
+
+    def canThreaten(self, row:int, col:int):
+        rowDiff = abs(self.row - row)
+        colDiff = abs(self.col - col)
+        if rowDiff == 0 or colDiff == 0:
+            return (rowDiff, colDiff)
 
 class Queen(ChessPiece):
 
@@ -531,6 +555,12 @@ class Queen(ChessPiece):
 
         return moves
 
+    def canThreaten(self, row:int, col:int):
+        rowDiff = abs(self.row - row)
+        colDiff = abs(self.col - col)
+        if rowDiff == colDiff or (rowDiff == 0 or colDiff == 0):
+            return (rowDiff, colDiff)
+
 class King(ChessPiece):
 
     def __init__(self, color:bool, row:int, col:int):
@@ -569,6 +599,12 @@ class King(ChessPiece):
                     moves.insert(0, child)
         
         return moves
+
+    def canThreaten(self, row:int, col:int):
+        rowDiff = abs(self.row - row)
+        colDiff = abs(self.col - col)
+        if rowDiff <= 1 and colDiff <= 1:
+            return (rowDiff, colDiff)
 
 def newPiece(designation:str, rc:tuple):
     if designation.lower() == designation:
