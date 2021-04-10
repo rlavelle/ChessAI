@@ -15,8 +15,17 @@ def gen_boards_from_opening(opening,board):
     return boards
 
 def get_move_from_algebraic(board, algebraic):
+    conversion = convertFromNotation(algebraic, board.turn)
+
     # algebraic to move -> piece,row,col 
-    piece,row,col = convertFromNotation(algebraic)
+
+    # unpack properly if its a disambiguious pawn capture /move or regular piece
+    if len(conversion) == 4:
+        piece,from_col_row,row,col = conversion
+    else:
+        piece,row,col = conversion
+        from_col_row = None
+    
     to_move = (row,col)
 
     piece = piece.upper() if board.turn else piece.lower() 
@@ -29,7 +38,14 @@ def get_move_from_algebraic(board, algebraic):
         moves = board.get(loc)[1].getMoves(board)
         for move in moves:
             if to_move in move:
-                return move
+                # if its a disambiguious pawn capture or a disambiguious move
+                if from_col_row:
+                    # make sure its in the right column or row
+                    if from_col_row == move[0]
+                        return move
+                # if its not a pawn
+                else:
+                    return move
 
 def short_string(board):
     return ''.join(board.state)
