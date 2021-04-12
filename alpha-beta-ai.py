@@ -5,7 +5,7 @@ import copy
 import math
 import time
 
-MAX_DEPTH = 5
+MAX_DEPTH = 7
 
 class AI:
     def __init__(self,turn):
@@ -27,9 +27,9 @@ class AI:
                                                        alpha=-math.inf,
                                                        beta=math.inf)
             end = time.time()
-            k += 1
-
             print(f'depth: {k}, runtime: {end-start}, states visited {self.count}')
+
+            k += 1
         return best_move,score
 
     def alpha_beta_minimax(self,board,depth,alpha,beta):
