@@ -2,8 +2,7 @@
 # Zach Wilkerson, Rowan Lavelle, Josep Han
 
 from players import RandomPlayer
-from board import Board
-from functions import *
+from alpha_beta_ai import AI
 import sys
 import chess
 
@@ -36,7 +35,10 @@ def play(white = None, black = None):
     board = chess.Board()
     while not board.is_game_over():
         if board.turn == chess.WHITE and white is not None:
-            white.makeMove(board)
+            if type(white) == RandomPlayer:
+                white.makeMove(board)
+            elif type(white) == AI:
+                board.push(white.get_best_move(board)[0])
         elif board.turn == chess.WHITE:
             print(board)
             while True:
@@ -52,7 +54,10 @@ def play(white = None, black = None):
                     except:
                         print("Illegal Move")
         if board.turn == chess.BLACK and black is not None:
-            black.makeMove(board)
+            if type(black) == RandomPlayer:
+                black.makeMove(board)
+            elif type(black) == AI:
+                board.push(black.get_best_move(board))
         elif board.turn == chess.BLACK:
             print(board)
             while True:
@@ -75,7 +80,12 @@ if __name__ == "__main__":
 
     if sys.argv[1] == "1":
         if sys.argv[2] == "w":
-            play(RandomPlayer(WHITE), None)
+            play(RandomPlayer(chess.WHITE), None)
         else:
-            play(None, RandomPlayer(BLACK))
+            play(None, RandomPlayer(chess.BLACK))
+    elif sys.argv[1] == "2":
+        if sys.argv[2] == "w":
+            play(AI(chess.WHITE), None)
+        else:
+            play(None, AI(chess.BLACK))
             
