@@ -4,7 +4,7 @@ import copy
 import math
 import time
 
-MAX_DEPTH = 10
+MAX_DEPTH = 6
 
 class AI:
     def __init__(self,player):
