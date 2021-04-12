@@ -1,6 +1,5 @@
 import json
-from board import Board
-from functions import *
+import chess
 
 
 def gen_boards_from_opening(opening,board):
@@ -8,64 +7,51 @@ def gen_boards_from_opening(opening,board):
     boards = []
     
     for algebraic in opening:
-        move = get_move_from_algebraic(board, algebraic)
-        board.makeMove(*move)
-        boards.append(short_string(board))
+        #move = get_move_from_algebraic(board, algebraic)
+        try:
+            board.push_san(algebraic)
+        except ValueError:
+            print(f'Not SAN {algebraic}')
+        boards.append(str(board))
     
     return boards
 
-def get_move_from_algebraic(board, algebraic):
-    conversion = convertFromNotation(algebraic, board.turn)
-
-    # algebraic to move -> piece,row,col 
-
-    # unpack properly if its a disambiguious pawn capture /move or regular piece
-    if len(conversion) == 4:
-        piece,from_col_row,row,col = conversion
-    else:
-        piece,row,col = conversion
-        from_col_row = None
+def hamming_dist(a,b):
+    assert len(a) == len(b)
     
-    to_move = (row,col)
-
-    piece = piece.upper() if board.turn else piece.lower() 
-
-    # find all instances of that piece on the board
-    locs = [i_to_rc(loc) for loc in board.find_piece(piece)]
-
-    # find piece in locs which has that to_move
-    for loc in locs:
-        moves = board.get(loc)[1].getMoves(board)
-        for move in moves:
-            if to_move in move:
-                # if its a disambiguious pawn capture or a disambiguious move
-                if from_col_row:
-                    # make sure its in the right from column or row
-                    if from_col_row in move[0]
-                        return move
-                # if its not a pawn or disambiguious
-                else:
-                    return move
-
-def short_string(board):
-    return ''.join(board.state)
+    d = 0
+    for i in range(len(a)):
+        if a[i] != b[i]:
+            d += 1
+    
+    return d
 
 
 if __name__ == "__main__":
-    board = Board(turn=WHITE)
-    #print(board)
+    board = chess.Board()
 
     with open('openings.json') as json_file:
         data = json.load(json_file)
-
-    opening = data['A08']['moves']
-    #print()
-    print(opening)
     
-    boards = gen_boards_from_opening(opening, board)
+    opening_boards = {}
 
-    for board,algebraic in zip(boards,opening):
-        print(f'open: {algebraic}')
-        print(Board(turn=WHITE, initState=board))
-        print()
+    for eco in data:
+        print(eco)
+        opening_seq = data[eco]['moves']
 
+        # turn opening sequence into list of boards
+        board = chess.Board()
+        boards = gen_boards_from_opening(opening_seq, board)
+
+        # save in dict
+        opening_boards[eco] = {'name': data[eco]['name'], 'boards':boards}
+
+
+    dump = json.dumps(opening_boards)
+    output_file = open('opening-boards.json', 'w')
+    output_file.write(dump)
+    output_file.close()
+
+    
+    
+    
