@@ -12,7 +12,7 @@ def gen_boards_from_opening(opening,board):
             board.push_san(algebraic)
         except ValueError:
             print(f'Not SAN {algebraic}')
-        boards.append(simplify(str(board)))
+        boards.append((simplify(str(board)),algebraic))
     
     return boards
 
