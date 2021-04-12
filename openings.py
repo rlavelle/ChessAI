@@ -40,10 +40,10 @@ def get_move_from_algebraic(board, algebraic):
             if to_move in move:
                 # if its a disambiguious pawn capture or a disambiguious move
                 if from_col_row:
-                    # make sure its in the right column or row
-                    if from_col_row == move[0]
+                    # make sure its in the right from column or row
+                    if from_col_row in move[0]
                         return move
-                # if its not a pawn
+                # if its not a pawn or disambiguious
                 else:
                     return move
 
