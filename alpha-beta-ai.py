@@ -1,15 +1,14 @@
-from board import Board
+import chess
 from functions import *
-from pieces import *
 import copy
 import math
 import time
 
-MAX_DEPTH = 7
+MAX_DEPTH = 10
 
 class AI:
-    def __init__(self,turn):
-        self.turn = turn
+    def __init__(self,player):
+        self.player = player
         self.player_win_score = 10e10
         self.player_lose_score = -10e10
     
@@ -34,32 +33,32 @@ class AI:
 
     def alpha_beta_minimax(self,board,depth,alpha,beta):
         self.count += 1
-        terminal = board.isTerminal
+        terminal = board.outcome()
 
         # base cases (bottom of the minimax tree)
-        if terminal == 1:
-            return None, self.player_win_score
-        if terminal == 0:
-            return None, self.player_lose_score
+        if terminal:
+            if terminal.winner == self.player:
+                return None, self.player_win_score
+            if terminal != self.player:
+                return None, self.player_lose_score
         if depth == 0:
             return None, self.heuristic(board)
         
         # recursive case
         best_move = None
         
-        moves = board.successor()
+        moves = list(board.legal_moves)
 
         # maximize
-        if board.turn == self.turn:
+        if board.turn == self.player:
             best_score = -math.inf
             for move in moves:
-                child_board = copy.deepcopy(board)
-                child_board.makeMove(*move)
-
-                _,score = self.alpha_beta_minimax(board=child_board,
+                board.push(move)
+                _,score = self.alpha_beta_minimax(board=board,
                                                   depth=depth-1,
                                                   alpha=alpha,
                                                   beta=beta)
+                board.pop()
                 if score > best_score:
                     best_score, best_move = score, move
 
@@ -69,13 +68,12 @@ class AI:
         else:
             best_score = math.inf
             for move in moves:
-                child_board = copy.deepcopy(board)
-                child_board.makeMove(*move)
-
-                _,score = self.alpha_beta_minimax(board=child_board,
+                board.push(move)
+                _,score = self.alpha_beta_minimax(board=board,
                                                   depth=depth-1,
                                                   alpha=alpha,
                                                   beta=beta)
+                board.pop()
                 if score < best_score:
                     best_score, best_move = score, move
 
@@ -86,13 +84,13 @@ class AI:
 
 
 if __name__ == "__main__":
-    ai = AI(turn=WHITE)
+    ai = AI(player=chess.WHITE)
 
-    start_board = Board(turn=WHITE)
+    start_board = chess.Board()
 
     best_move, best_score = ai.get_best_move(board=start_board)
 
     print(best_move)
 
-    start_board.makeMove(*best_move)
+    start_board.push(best_move)
     print(start_board)
