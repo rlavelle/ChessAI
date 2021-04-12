@@ -45,7 +45,10 @@ class Board:
         return np.where(self.state == p)[index]
 
     def successor(self):
-        pass
+        succs = []
+        for designation,piece in self.piece_locs[self.turn].values():
+            succs.extend(piece.getMoves(self))
+        return succs
 
     def makeMove(self, oldLoc:tuple, newLoc:tuple):
         temp = self.state[rc_to_i(*newLoc)]
