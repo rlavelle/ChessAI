@@ -12,9 +12,12 @@ def gen_boards_from_opening(opening,board):
             board.push_san(algebraic)
         except ValueError:
             print(f'Not SAN {algebraic}')
-        boards.append(str(board))
+        boards.append(simplify(str(board)))
     
     return boards
+
+def simplify(board):
+    return ''.join(board.strip('\n').split())
 
 def hamming_dist(a,b):
     assert len(a) == len(b)
