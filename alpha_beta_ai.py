@@ -4,7 +4,7 @@ import copy
 import math
 import time
 
-MAX_DEPTH = 6
+MAX_DEPTH = 4
 
 class AI:
     def __init__(self,player, verbose):
@@ -60,7 +60,7 @@ class AI:
             if terminal != self.player:
                 return None, self.player_lose_score
         if depth == 0:
-            return None, self.heuristic(board)
+            return None, self.heuristicZ(board)
         
         # recursive case
         best_move = None
