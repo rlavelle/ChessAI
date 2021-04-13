@@ -4,25 +4,53 @@ import math
 import time
 
 class OpenAI:
-    def __init__(self, openings):
-        self.openings = openings
+    def __init__(self):
+        self.openings = self.load_openings()
     
+    def load_openings(self):
+        with open('opening-boards.json') as json_file:
+            data = json.load(json_file) 
+        return data
+
     def match_board(self, board):
         board_str = self.simplify(str(board))
         
-        best = {'board': None, 'move': None, 'name': None, 'dist': math.inf}
-
+        best_dist = math.inf
         for eco in self.openings:
             boards = self.openings[eco]['boards']
             for b,san in boards:
                 dist = self.hamming_dist(board_str,b)
-                if dist < best['dist']:
-                    best['board'] = b
-                    best['move'] = san
-                    best['name'] = eco
-                    best['dist'] = dist
-        return best
+                if dist < best_dist:
+                    best_dist = dist
+        
+        matches = {}
+        for eco in self.openings:
+            for i, (b,san) in enumerate(self.openings[eco]['boards']):
+                dist = self.hamming_dist(board_str,b)
+                if dist == best_dist:
+                    matches[eco] = (san,i)
+
+        return matches
     
+    def get_best_move(self, board):
+        # first match the board to find all openings its similar to
+        matches = self.match_board(board)
+
+        # loop through matches
+        for eco, (san,index) in matches.items():
+            # see if index+1 is out of range
+            if len(self.openings[eco]['boards']) > index+1:
+                # if its not select the next move in the opening sequence as the move
+                move =  self.openings[eco]['boards'][index+1][1]
+
+                # if its a valid move return it (this is messy lol)
+                try: 
+                    board.parse_san(move)
+                    return move
+                except ValueError:
+                    pass
+
+
     def hamming_dist(self, a, b):
         assert len(a) == len(b)
         
@@ -38,17 +66,18 @@ class OpenAI:
 
 
 if __name__ == "__main__":
-    with open('opening-boards.json') as json_file:
-        data = json.load(json_file)    
-
     board = chess.Board()
     board.push_san('c4')
-
-    open_ai = OpenAI(openings=data)
+    board.push_san('Nf6')
+    print(board)
+    print()
+    open_ai = OpenAI()
 
     start = time.time()
-    best = open_ai.match_board(board=board)
+    move = open_ai.get_best_move(board=board)
     end = time.time()
 
-    print(open_ai.openings[best['name']])
+    print(move)
+    board.push_san(move)
+    print(board)
     print(end-start)
