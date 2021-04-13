@@ -7,8 +7,9 @@ import time
 MAX_DEPTH = 6
 
 class AI:
-    def __init__(self,player):
+    def __init__(self,player, verbose):
         self.player = player
+        self.verbose = verbose
         self.player_win_score = 10e10
         self.player_lose_score = -10e10
     
@@ -41,7 +42,9 @@ class AI:
                                                        alpha=-math.inf,
                                                        beta=math.inf)
             end = time.time()
-            print(f'depth: {k}, runtime: {end-start}, states visited {self.count}')
+
+            if self.verbose:
+                print(f'depth: {k}, runtime: {end-start}, states visited {self.count}')
 
             k += 1
         return best_move,score
