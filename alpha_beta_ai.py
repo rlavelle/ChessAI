@@ -15,6 +15,21 @@ class AI:
     def heuristic(self,board):
         return 0
 
+    def heuristicZ(self, board):
+        values = {
+            chess.PAWN : 1,
+            chess.KNIGHT : 3,
+            chess.BISHOP : 3,
+            chess.ROOK : 5,
+            chess.QUEEN : 9
+        }
+        material = 0
+        for pieceType in (chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN):
+            material += len(board.pieces(pieceType, self.player))*values[pieceType]
+            material -= len(board.pieces(pieceType, not self.player))*values[pieceType]
+        return material * len(tuple(board.legal_moves))
+
+
     def get_best_move(self,board):
         # IDS version of alpha beta
         k = 1

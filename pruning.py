@@ -2,9 +2,9 @@
 # Zach Wilkerson
 
 from cbr import Feature, Case, CaseBase
-from board import Board
 from functions import *
 from sys import maxsize
+import chess
 
 class PruningCase(Case):
 
@@ -43,27 +43,27 @@ class PruningCaseBase(CaseBase):
 #TODO: consider a moveablePieces field for board to avoid double-counting when applying CBR
 
 #If a piece is pinned to a more valuable piece, do not move it
-def pinned(board:Board):
-    unconsideredPieces = []
-    for opposingPieceLoc in board.piece_locs[not board.turn].keys():
-        for potentialThreatenedPiece in board.piece_locs[board.turn].keys():
-            for potentialPinnedPiece in board.piece_locs[board.turn].keys():
-                valuePieceDist = board.piece_locs[opposingPieceLoc][1].canThreaten(potentialThreatenedPiece[0], potentialThreatenedPiece[1])
-                pinnedPieceDist = board.piece_locs[opposingPieceLoc][1].canThreaten(potentialPinnedPiece[0], potentialPinnedPiece[1])
-                if valuePieceDist is None or pinnedPieceDist is None:
-                    continue
-                else:
-                    if valuePieceDist[0]-pinnedPieceDist[0] >= 0 and valuePieceDist[1]-pinnedPieceDist[1] >= 0 and \
-                        board.piece_locs[potentialPinnedPiece][1].value < board.piece_locs[potentialThreatenedPiece][1].value:
-                        unconsideredPieces.append(potentialPinnedPiece)
-    return unconsideredPieces
+# def pinned(board:Board):
+#     unconsideredPieces = []
+#     for opposingPieceLoc in board.piece_locs[not board.turn].keys():
+#         for potentialThreatenedPiece in board.piece_locs[board.turn].keys():
+#             for potentialPinnedPiece in board.piece_locs[board.turn].keys():
+#                 valuePieceDist = board.piece_locs[opposingPieceLoc][1].canThreaten(potentialThreatenedPiece[0], potentialThreatenedPiece[1])
+#                 pinnedPieceDist = board.piece_locs[opposingPieceLoc][1].canThreaten(potentialPinnedPiece[0], potentialPinnedPiece[1])
+#                 if valuePieceDist is None or pinnedPieceDist is None:
+#                     continue
+#                 else:
+#                     if valuePieceDist[0]-pinnedPieceDist[0] >= 0 and valuePieceDist[1]-pinnedPieceDist[1] >= 0 and \
+#                         board.piece_locs[potentialPinnedPiece][1].value < board.piece_locs[potentialThreatenedPiece][1].value:
+#                         unconsideredPieces.append(potentialPinnedPiece)
+#     return unconsideredPieces
 
 
 
 
 
 
-def analyze(board:Board):
+def analyze(board):
 
     cases = []
 
