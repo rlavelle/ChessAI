@@ -33,6 +33,10 @@ class OpenAI:
         return matches
     
     def get_best_move(self, board):
+        if str(board) == str(chess.Board()):
+            print('playing Sicilian')
+            return "e4" # play the Sicilian
+
         # first match the board to find all openings its similar to
         matches = self.match_board(board)
 
@@ -46,9 +50,12 @@ class OpenAI:
                 # if its a valid move return it (this is messy lol)
                 try: 
                     board.parse_san(move)
+                    print(f'playing {self.openings[eco]["name"]}')
                     return move
                 except ValueError:
                     pass
+        
+        return None
 
 
     def hamming_dist(self, a, b):
