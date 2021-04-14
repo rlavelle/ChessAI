@@ -1,7 +1,7 @@
 # Driver class
 # Zach Wilkerson, Rowan Lavelle, Josep Han
 
-from players import RandomPlayer
+from players import RandomPlayer, CBRPlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
 import sys
@@ -44,6 +44,8 @@ def play(white = None, black = None):
                 board.push(white.get_best_move(board)[0])
             elif type(white) == OpenAI:
                 board.push_san(white.get_best_move(board))
+            elif type(white) == CBRPlayer:
+                board.push(white.makeMove(board)[0])
         elif board.turn == chess.WHITE:
             while True:
                 print("Make a move:")
@@ -64,6 +66,8 @@ def play(white = None, black = None):
                 board.push(black.get_best_move(board)[0])
             elif type(black) == OpenAI:
                 board.push_san(black.get_best_move(board))
+            elif type(black) == CBRPlayer:
+                board.push(black.makeMove(board)[0])
         elif board.turn == chess.BLACK:
             while True:
                 print("Make a move:")
@@ -100,5 +104,10 @@ if __name__ == "__main__":
             play(OpenAI(),AI(chess.BLACK, verbose=False))
         else:
             play(AI(chess.WHITE, verbose=False), OpenAI())
+    elif sys.argv[1] == "4":
+        if sys.argv[2] == "w":
+            play(None,CBRPlayer(chess.BLACK, verbose=True))
+        else:
+            play(CBRPlayer(chess.WHITE, verbose=True), None)
 
             

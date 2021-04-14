@@ -7,7 +7,7 @@ import time
 MAX_DEPTH = 4
 
 class AI:
-    def __init__(self,player, verbose):
+    def __init__(self,player, verbose = False):
         self.player = player
         self.verbose = verbose
         self.player_win_score = 10e10
@@ -28,7 +28,7 @@ class AI:
         for pieceType in (chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN):
             material += len(board.pieces(pieceType, self.player))*values[pieceType]
             material -= len(board.pieces(pieceType, not self.player))*values[pieceType]
-        return material * len(tuple(board.legal_moves))
+        return material # * len(tuple(board.legal_moves))
 
 
     def get_best_move(self,board):

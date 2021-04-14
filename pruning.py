@@ -6,6 +6,14 @@ from functions import *
 from sys import maxsize
 import chess
 
+materialValue = {
+            chess.PAWN : 1,
+            chess.KNIGHT : 3,
+            chess.BISHOP : 3,
+            chess.ROOK : 5,
+            chess.QUEEN : 9
+        }
+
 class PruningCase(Case):
 
     def __init__(self, output = None):
@@ -23,22 +31,45 @@ class PruningCaseBase(CaseBase):
 
     def __init__(self):
         super().__init__()
-        pinnedCase = PruningCase()
-        pinnedCase.addFeature(Feature(0, "pinned pieces", pinned))
-        self.addCase(pinnedCase)
+        threatCase = PruningCase()
+        threatCase.addFeature(Feature(None, "threat", threat))
+        self.addCase(threatCase)
 
-    def getUnconsideredPieces(self, query):
-        unconsideredPieces = []
+    def getPruning(self, query):
+        finalPruning = [False,chess.SquareSet()]
         for caseHash in self.cases.keys():
-            pieces = self.getCase(caseHash).getDifference(query)
-            for featureName in pieces.keys():
-                for piece in pieces[featureName]:
-                    unconsideredPieces.append(piece)
-        return unconsideredPieces
+            prunings = self.getCase(caseHash).getDifference(query)
+            for featureName in prunings.keys():
+                if prunings[featureName][0] is not None:
+                    finalPruning[0] = True
+                    for square in prunings[featureName][0]:
+                        finalPruning[1].add(square)
+                else:
+                    if not finalPruning:
+                        for square in prunings[featureName][0]:
+                            finalPruning[1].add(square)
+        return finalPruning
 
 #==================================
 # Cases
 #==================================
+
+def threat(board:chess.Board):
+    threatenedPieces = chess.SquareSet()
+    for pieceType in (chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT, chess.PAWN):
+        for square in board.pieces(pieceType, board.turn):
+            attackers = board.attackers(not board.turn, square)
+            for attackingSquare in attackers:
+                try:
+                    if materialValue[board.piece_at(attackingSquare).piece_type] < materialValue[board.piece_at(square).piece_type]:
+                        threatenedPieces.add(square)
+                        break
+                except:
+                    print(board.piece_at(attackingSquare).piece_type, board.piece_at(square).piece_type)
+                    print(board.piece_at(attackingSquare), board.piece_at(square))
+                    print(board)
+                    print(attackingSquare, square)
+    return (threatenedPieces, None)
 
 #TODO: consider a moveablePieces field for board to avoid double-counting when applying CBR
 
@@ -58,50 +89,6 @@ class PruningCaseBase(CaseBase):
 #                         unconsideredPieces.append(potentialPinnedPiece)
 #     return unconsideredPieces
 
-
-
-
-
-
-def analyze(board):
-
-    cases = []
-
-    
-
-    # If the king has castled, don't move any pawns in front of it
-    if board.turn:
-        kingPos = board.find_piece("K")
-    else:
-        kingPos = board.find_piece("K")
-    kingPosXY = i_to_rc(kingPos)
-    pruning = (kingPos) #TODO: create tuple of locations as the three spaces in front of the king's location (kingPos)
-    castledKing = Case(pruning)
-    for i in range(3):
-        pass
-    cases.append(castledKing)
-
-    # If a piece is threatened by a pawn, that piece must be moved
-    if board.turn:
-        for piece in WHITE_PIECES:
-            pieceLoc = board.find_piece(piece)
-            # If threatened by a pawn, add a case with all other pieces removed/that piece highlighted
-    else:
-        for piece in BLACK_PIECES:
-            pieceLoc = board.find_piece(piece)
-            # Separate case, since the threat is two different diagonals
-
-    # If a piece is pinned by a Bishop to a piece of greater value than that Bishop, don't move the piece
-    if board.turn:
-        for i in range(2):
-            pieceLoc = board.find_piece("b",i)
-            # See if Bishop can potentially threaten both the pinned piece and the more valuable piece
-    else:
-        for i in range(2):
-            pieceLoc = board.find_piece("B",i)
-            # Other color case
-
-    # If the piece is pinned by a rook to a piece of greater value than that Rook, don't move the piece
             
     #==================================
     # Adaptations
