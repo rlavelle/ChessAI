@@ -108,37 +108,17 @@ class CBRPlayer(AI):
         # minimize
         else:
             best_score = math.inf
-            if prunings[0]:
-                for move in moves:
-                    if len(prunings[1]) > 0 and move.from_square not in prunings[1]:
-                        self.pruned += 1
-                        continue
-                    board.push(move)
-                    _,score = self.alpha_beta_minimax(board=board,
-                                                    depth=depth-1,
-                                                    alpha=alpha,
-                                                    beta=beta)
-                    board.pop()
-                    if score < best_score:
-                        best_score, best_move = score, move
+            for move in moves:
+                board.push(move)
+                _,score = self.alpha_beta_minimax(board=board,
+                                                depth=depth-1,
+                                                alpha=alpha,
+                                                beta=beta)
+                board.pop()
+                if score < best_score:
+                    best_score, best_move = score, move
 
-                    beta = min(beta,score)
-                    if alpha >= beta: break 
-            else:
-                for move in moves:
-                    if len(prunings[1]) > 0 and move.from_square in prunings[1]:
-                        self.pruned += 1
-                        continue
-                    board.push(move)
-                    _,score = self.alpha_beta_minimax(board=board,
-                                                    depth=depth-1,
-                                                    alpha=alpha,
-                                                    beta=beta)
-                    board.pop()
-                    if score < best_score:
-                        best_score, best_move = score, move
-
-                    beta = min(beta,score)
-                    if alpha >= beta: break 
+                beta = min(beta,score)
+                if alpha >= beta: break
         
         return best_move, best_score

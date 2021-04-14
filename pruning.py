@@ -11,7 +11,8 @@ materialValue = {
             chess.KNIGHT : 3,
             chess.BISHOP : 3,
             chess.ROOK : 5,
-            chess.QUEEN : 9
+            chess.QUEEN : 9,
+            chess.KING : 100000
         }
 
 class PruningCase(Case):
@@ -61,11 +62,11 @@ def threat(board:chess.Board):
             attackers = board.attackers(not board.turn, square)
             for attackingSquare in attackers:
                 try:
-                    if materialValue[board.piece_at(attackingSquare).piece_type] < materialValue[board.piece_at(square).piece_type]:
+                    if materialValue[board.piece_type_at(attackingSquare)] < materialValue[board.piece_type_at(square)]:
                         threatenedPieces.add(square)
                         break
                 except:
-                    print(board.piece_at(attackingSquare).piece_type, board.piece_at(square).piece_type)
+                    print(board.piece_type_at(attackingSquare), board.piece_type_at(square))
                     print(board.piece_at(attackingSquare), board.piece_at(square))
                     print(board)
                     print(attackingSquare, square)
