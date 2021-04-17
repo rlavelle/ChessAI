@@ -15,42 +15,6 @@ materialValue = {
     chess.KING : 100000
 }
 
-# class PruningCase(Case):
-
-#     def __init__(self, output = None):
-#         super().__init__(output)
-
-#     #NOTE: in this function, otherCase is actually a Board object for querying
-#     def getDifference(self, otherCase):
-#         differences = {}
-#         for featureName in self.features.keys():
-#             differences[featureName] = self.features[featureName].similarity(otherCase)
-#         return differences
-
-
-# class PruningCaseBase(CaseBase):
-
-#     def __init__(self):
-#         super().__init__()
-#         threatCase = PruningCase()
-#         threatCase.addFeature(Feature(None, "threat", threat))
-#         self.addCase(threatCase)
-
-#     def getPruning(self, query):
-#         finalPruning = [False,chess.SquareSet()]
-#         for caseHash in self.cases.keys():
-#             prunings = self.getCase(caseHash).getDifference(query)
-#             for featureName in prunings.keys():
-#                 if prunings[featureName][0] is not None:
-#                     finalPruning[0] = True
-#                     for square in prunings[featureName][0]:
-#                         finalPruning[1].add(square)
-#                 else:
-#                     if not finalPruning:
-#                         for square in prunings[featureName][0]:
-#                             finalPruning[1].add(square)
-#         return finalPruning
-
 """
 Initial plan = cases and adaptations, retrieved in a rule-based way
 New plan = hierarchy of condition/response rules to determine possible prunings
@@ -60,6 +24,9 @@ New plan = hierarchy of condition/response rules to determine possible prunings
 # Condition Rules (tier 1)
 #==================================
 
+# Determine which pieces are threatened (require attention)
+#   board = the chessboard object
+#   returns: a chess.SquareSet of threatened pieces
 def threatenedPieces(board:chess.Board):
     threatenedPieces = chess.SquareSet()
     for pieceType in (chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT, chess.PAWN):
@@ -73,6 +40,9 @@ def threatenedPieces(board:chess.Board):
             #         break
     return threatenedPieces
 
+# Determine which pieces are currently attacked by your pieces
+#   board = the chessboard object
+#   returns: a chess.SquareSet of threatened pieces
 def piecesThreatened(board:chess.Board):
     piecesThreatened = chess.SquareSet()
     for pieceType in (chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT, chess.PAWN):
@@ -85,20 +55,31 @@ def piecesThreatened(board:chess.Board):
 # Response Rules (tier 2)
 #==================================
 
+# Hierarchical rule response based on pieces threatened
+#   board = the chessboard object
+#   threatenedPieces = your pieces that are threatened
+#   piecesThreatened = opponent's pieces that you threaten
+#   validMoves_from_to = set of moves that should be considered (others should be pruned if not empty); organized
+#       as a tuple of chess.SquareSet objects representing from_square and to_square objects
+#   returns: moves that should be considered
 def threatResponse(board:chess.Board, threatenedPieces, piecesThreatened, validMoves_from_to = (chess.SquareSet(), chess.SquareSet())):
     for square in threatenedPieces:
         attackers = board.attackers(not board.turn, square)
         attackerStrength = []
         lowMaterialAttacker = False
         for attackingSquare in attackers:
+            # attacked by a piece worth less material (e.g., pawn attacks knight)
             if materialValue[board.piece_type_at(attackingSquare)] < materialValue[board.piece_type_at(square)]:
                 validMoves_from_to[0].add(square)
                 lowMaterialAttacker = True
+            # if you can capture the attacker, consider the capture move
             if attackingSquare in piecesThreatened:
                 validMoves_from_to[1].add(attackingSquare)
             if not lowMaterialAttacker:
                 attackerStrength.append(materialValue[board.piece_type_at(attackingSquare)])
                 attackerStrength.sort()
+        # determine whether you can afford an exchange
+        # TODO: at this point, should we always consider it reasonable/possible to move the piece?
         if not lowMaterialAttacker:
             defenders = board.attackers(board.turn, square)
             if len(defenders) == 0:
@@ -122,17 +103,22 @@ def threatResponse(board:chess.Board, threatenedPieces, piecesThreatened, validM
                     defenderStats[1] += 1
                 except:
                     defenderStats = defenderStats
+                #same number of pieces attacking/defending (so far)
                 if attackerStats[1] == defenderStats[1]:
+                    #attacker has smaller-material pieces attacking (can win the exchange)
                     if attackerStats[0] < defenderStats[0]:
                         validMoves_from_to[0].add(square)
                         break
+                    # you can win the exchange
                     elif attackerStats[0] > defenderStats[0]:
                         break
+                    # not yet decidable
                     else:
                         if index == len(attackerStats):
                             break
                         else:
                             index += 1
+                # opponent has more pieces attacking than you have defending
                 elif  attackerStats[1] > defenderStats[1]:
                     validMoves_from_to[0].add(square)
                     break
@@ -140,6 +126,12 @@ def threatResponse(board:chess.Board, threatenedPieces, piecesThreatened, validM
                     break
     return validMoves_from_to
 
+# Hierarchical rule response based on offense
+#   board = the chessboard object
+#   piecesThreatened = opponent's pieces that you threaten
+#   validMoves_from_to = set of moves that should be considered (others should be pruned if not empty); organized
+#       as a tuple of chess.SquareSet objects representing from_square and to_square objects
+#   returns: moves that should be considered
 def canThreatenResponse(board:chess.Board, piecesThreatened, validMoves_from_to = (chess.SquareSet(), chess.SquareSet())):
     for square in piecesThreatened:
         if len(validMoves_from_to[0]) == 0:
@@ -190,6 +182,9 @@ def genericResponse(proposedBoard:chess.Board, originalBoard:chess.Board, move:c
         - maximize overall number of attacked squares (?)
     """
 
+# Wrapper function for these operations
+#   board = the chessboard object
+#   returns: the list of valid squares to consider
 def threatMoves(board:chess.Board):
     tP = threatenedPieces(board)
     pT = piecesThreatened(board)

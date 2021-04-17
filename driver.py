@@ -7,31 +7,9 @@ from opening import OpenAI
 import sys
 import chess
 
-# def play(white = None, black = None):
-#     board = Board(turn=WHITE)
-#     turnPlayer = True
-#     while board.isTerminal == -1:
-#         if turnPlayer and white != None:
-#             white.makeMove(board)
-#         elif turnPlayer:
-#             print(board)
-#             print("Make a move ('r1 c1 r2 c2')")
-#             move = input().split(" ")
-#             if move[0] == "q":
-#                 break
-#             board.makeMove((int(move[0]), int(move[1])), (int(move[2]), int(move[3])))
-#         elif not turnPlayer and black != None:
-#             black.makeMove(board)
-#         else:
-#             print(board)
-#             print("Make a move ('r1 c1 r2 c2')")
-#             move = input().split(" ")
-#             if move[0] == "q":
-#                 break
-#             board.makeMove((int(move[0]), int(move[1])), (int(move[2]), int(move[3])))
-#         turnPlayer = not turnPlayer
-#     print("Game Over")
-
+# Play a game of chess
+#   white = white piece AI (human player if None)
+#   black = black piece AI (human player if None)
 def play(white = None, black = None):
     board = chess.Board()
     print(board)
