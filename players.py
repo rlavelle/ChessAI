@@ -4,7 +4,7 @@
 from board import Board
 import random
 import chess
-from pruning import PruningCaseBase
+from pruning import *
 from alpha_beta_ai import AI
 import time
 import math
@@ -30,7 +30,6 @@ class CBRPlayer(AI):
 
     def __init__(self, player:bool, verbose=True):
         super().__init__(player, verbose)
-        self.cb = PruningCaseBase()
 
     def makeMove(self, board:Board):
         # IDS version of alpha beta
@@ -68,57 +67,64 @@ class CBRPlayer(AI):
         best_move = None
         
         moves = list(board.legal_moves)
-        prunings = self.cb.getPruning(board)
+        prunes = threatMoves(board)
+        noThreats = False if len(prunes[0]) > 0 or len(prunes[1]) > 0 else True
 
         # maximize
         if board.turn == self.player:
             best_score = -math.inf
-            if prunings[0]:
-                for move in moves:
-                    if len(prunings[1]) > 0 and move.from_square not in prunings[1]:
-                        self.pruned += 1
-                        continue
+            for move in moves:
+                if move.from_square in prunes[0] or move.to_square in prunes[1]:
+                    oldBoard = board.copy()
                     board.push(move)
-                    _,score = self.alpha_beta_minimax(board=board,
+                    if genericResponse(board, oldBoard, move):
+                        _,score = self.alpha_beta_minimax(board=board,
                                                     depth=depth-1,
                                                     alpha=alpha,
                                                     beta=beta)
-                    board.pop()
-                    if score > best_score:
-                        best_score, best_move = score, move
+                        board.pop()
+                        if score > best_score:
+                            best_score, best_move = score, move
 
-                    alpha = max(alpha,score)
-                    if alpha >= beta: break
-            else:
-                for move in moves:
-                    if len(prunings[1]) > 0 and move.from_square in prunings[1]:
+                        alpha = max(alpha,score)
+                        if alpha >= beta: break
+                    else:
+                        board.pop()
                         self.pruned += 1
-                        continue
-                    board.push(move)
-                    _,score = self.alpha_beta_minimax(board=board,
-                                                    depth=depth-1,
-                                                    alpha=alpha,
-                                                    beta=beta)
-                    board.pop()
-                    if score > best_score:
-                        best_score, best_move = score, move
+                else:
+                    if noThreats:
+                        oldBoard = board.copy()
+                        board.push(move)
+                        if genericResponse(board, oldBoard, move):
+                            _,score = self.alpha_beta_minimax(board=board,
+                                                        depth=depth-1,
+                                                        alpha=alpha,
+                                                        beta=beta)
+                            board.pop()
+                            if score > best_score:
+                                best_score, best_move = score, move
 
-                    alpha = max(alpha,score)
-                    if alpha >= beta: break
+                            alpha = max(alpha,score)
+                            if alpha >= beta: break
+                        else:
+                            board.pop()
+                            self.pruned += 1
+                    else:
+                        self.pruned += 1
         # minimize
         else:
             best_score = math.inf
             for move in moves:
                 board.push(move)
                 _,score = self.alpha_beta_minimax(board=board,
-                                                depth=depth-1,
-                                                alpha=alpha,
-                                                beta=beta)
+                                                  depth=depth-1,
+                                                  alpha=alpha,
+                                                  beta=beta)
                 board.pop()
                 if score < best_score:
                     best_score, best_move = score, move
 
                 beta = min(beta,score)
-                if alpha >= beta: break
+                if alpha >= beta: break 
         
         return best_move, best_score
