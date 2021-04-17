@@ -4,7 +4,7 @@
 import numpy as np
 from functions import *
 import pieces
-
+history = []
 class Board:
 
     def __init__(self, turn:bool, initState:str = None):
@@ -15,6 +15,8 @@ class Board:
         self.turn = turn # true is whites turn, false is blacks turn
         self.piece_locs = {True:{}, False:{}}
         self.init_piece_locs_dict()
+        # history of moves played
+        # self.history = np.array([])
 
     def __str__(self):
         s = ""
@@ -52,6 +54,11 @@ class Board:
 
     def makeMove(self, oldLoc:tuple, newLoc:tuple):
         temp = self.state[rc_to_i(*newLoc)]
+
+        # upper case the piece name (e.g. black p => upper P)
+        to_history = (self.state[rc_to_i(*oldLoc)].upper(), oldLoc, newLoc)
+
+
         if temp == ".":
             self.state[rc_to_i(*newLoc)] = self.state[rc_to_i(*oldLoc)]
             self.state[rc_to_i(*oldLoc)] = temp
@@ -63,6 +70,10 @@ class Board:
         self.piece_locs[self.turn].pop(oldLoc)
         self.piece_locs[self.turn][newLoc][1].setLocation(*newLoc)
         self.turn = not self.turn
+        # add the old location and new location 
+        
+        
+        history.append(to_history)
 
     @property
     def isTerminal(self):
