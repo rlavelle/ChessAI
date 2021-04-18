@@ -8,6 +8,7 @@ from pruning import *
 from alpha_beta_ai import AI
 import time
 import math
+from opening import OpenAI
 
 MAX_DEPTH = 5
 
@@ -23,25 +24,46 @@ class CBRPlayer(AI):
 
     def __init__(self, player:bool, verbose=True):
         super().__init__(player, verbose)
+        self.open_ai = OpenAI()
+        self.use_open = True
 
     def makeMove(self, board:Board):
         # IDS version of alpha beta
-        k = 1
-        while k < MAX_DEPTH:
-            self.count = 0
-            self.pruned = 0
-            start = time.time()
-            best_move, score = self.alpha_beta_minimax(board=board,
-                                                       depth=k,
-                                                       alpha=-math.inf,
-                                                       beta=math.inf)
-            end = time.time()
+
+        san_move = None
+
+        if self.use_open:
+            san_move = self.open_ai.get_best_move(board)
+        
+        if san_move:
+            best_move = board.parse_san(san_move)
+            score = 0
 
             if self.verbose:
-                print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, pruned: {self.pruned}')
+                print(f'opening move found')
 
-            k += 1
-        return best_move,score
+            return best_move,score
+        else:
+            self.use_open = False
+            
+            k = 1
+            while k < MAX_DEPTH:
+                self.count = 0
+                self.pruned = 0
+                
+                start = time.time()
+                
+                best_move, score = self.alpha_beta_minimax(board=board,
+                                                           depth=k,
+                                                           alpha=-math.inf,
+                                                           beta=math.inf)
+                end = time.time()
+
+                if self.verbose:
+                    print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, pruned: {self.pruned}')
+
+                k += 1
+            return best_move,score
 
     def alpha_beta_minimax(self,board,depth,alpha,beta):
         self.count += 1
