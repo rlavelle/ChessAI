@@ -33,14 +33,14 @@ class CBRPlayer(AI):
         san_move = None
 
         if self.use_open:
-            san_move = self.open_ai.get_best_move(board)
+            san_move, opening = self.open_ai.get_best_move(board)
         
         if san_move:
             best_move = board.parse_san(san_move)
             score = 0
 
             if self.verbose:
-                print(f'opening move found')
+                print(f'playing {opening}')
 
             return best_move,score
         else:
@@ -52,7 +52,7 @@ class CBRPlayer(AI):
                 self.pruned = 0
                 
                 start = time.time()
-                
+
                 best_move, score = self.alpha_beta_minimax(board=board,
                                                            depth=k,
                                                            alpha=-math.inf,
