@@ -34,8 +34,7 @@ class OpenAI:
     
     def get_best_move(self, board):
         if str(board) == str(chess.Board()):
-            print('playing Sicilian')
-            return "e4" # play the Sicilian
+            return "e4", "Sicilian" # play the Sicilian
 
         # first match the board to find all openings its similar to
         matches = self.match_board(board)
@@ -45,17 +44,16 @@ class OpenAI:
             # see if index+1 is out of range
             if len(self.openings[eco]['boards']) > index+1:
                 # if its not select the next move in the opening sequence as the move
-                move =  self.openings[eco]['boards'][index+1][1]
+                move = self.openings[eco]['boards'][index+1][1]
 
                 # if its a valid move return it (this is messy lol)
                 try: 
                     board.parse_san(move)
-                    print(f'playing {self.openings[eco]["name"]}')
-                    return move
+                    return move, self.openings[eco]["name"]
                 except ValueError:
                     pass
         
-        return None
+        return None, "no opening"
 
 
     def hamming_dist(self, a, b):
