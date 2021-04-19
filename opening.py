@@ -5,58 +5,65 @@ import time
 
 class OpenAI:
     def __init__(self):
-        self.openings = self.load_openings()
+        self.cases = self.load_cases()
     
-    def load_openings(self):
+    # load cases in
+    def load_cases(self):
         with open('opening-boards.json') as json_file:
             data = json.load(json_file) 
         return data
-
-    def match_board(self, board):
-        board_str = self.simplify(str(board))
+    
+    # to find all matching cases close to best similarity
+    # not using k-nearest cases here, just pulling all valid cases close to similarity metric
+    # this way we have more viable cases to try and make moves from
+    def match_cases(self, case):
+        case_str = self.simplify(str(case))
         
         best_dist = math.inf
-        for eco in self.openings:
-            boards = self.openings[eco]['boards']
-            for b,san in boards:
-                dist = self.hamming_dist(board_str,b)
+        for case_name in self.cases:
+            cases = self.cases[case_name]['boards']
+            for c,san in cases:
+                dist = self.similarity(case_str,c)
                 if dist < best_dist:
                     best_dist = dist
         
-        matches = {}
-        for eco in self.openings:
-            for i, (b,san) in enumerate(self.openings[eco]['boards']):
-                dist = self.hamming_dist(board_str,b)
-                if dist == best_dist:
-                    matches[eco] = (san,i)
+        matched_cases = {}
+        for case_name in self.cases:
+            for i, (c,san) in enumerate(self.cases[case_name]['boards']):
+                dist = self.similarity(case_str,c)
+                # get all cases close to the best dist
+                if dist < best_dist+3:
+                    # only match an opening once so we dont overwrite
+                    if case_name not in matched_cases:
+                        matched_cases[case_name] = (i,dist)
 
-        return matches
+        return matched_cases
     
+    # find best most given a board
+    # a board is a case
     def get_best_move(self, board):
         if str(board) == str(chess.Board()):
             return "e4", "Sicilian" # play the Sicilian
 
-        # first match the board to find all openings its similar to
-        matches = self.match_board(board)
-
+        # first match the case to find all cases its similar to
+        matched_cases = self.match_cases(board)
+        print(matched_cases)
         # loop through matches
-        for eco, (san,index) in matches.items():
-            # see if index+1 is out of range
-            if len(self.openings[eco]['boards']) > index+1:
-                # if its not select the next move in the opening sequence as the move
-                move = self.openings[eco]['boards'][index+1][1]
-
+        for case_name, (dist,index) in matched_cases.items():
+            # sequentially try and make moves within this opening after the matched moves index
+            # this is trying to play through the opening from the matched case. 
+            for _,san in self.cases[case_name]['boards'][index:]:
                 # if its a valid move return it (this is messy lol)
                 try: 
-                    board.parse_san(move)
-                    return move, self.openings[eco]["name"]
+                    board.parse_san(san)
+                    return san, self.cases[case_name]["name"]
                 except ValueError:
                     pass
-        
+        print('no valid moves')
         return None, "no opening"
 
-
-    def hamming_dist(self, a, b):
+    # use hamming distance as case similarity metric
+    def similarity(self, a, b):
         assert len(a) == len(b)
         
         d = 0
@@ -73,16 +80,15 @@ class OpenAI:
 if __name__ == "__main__":
     board = chess.Board()
     board.push_san('c4')
-    board.push_san('Nf6')
+    board.push_san('c6')
     print(board)
     print()
     open_ai = OpenAI()
 
     start = time.time()
-    move = open_ai.get_best_move(board=board)
+    move, name = open_ai.get_best_move(board=board)
     end = time.time()
 
-    print(move)
+    print(name)
     board.push_san(move)
     print(board)
-    print(end-start)
