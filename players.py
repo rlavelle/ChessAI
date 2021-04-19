@@ -76,7 +76,7 @@ class CBRPlayer(AI):
             if terminal != self.player:
                 return None, self.player_lose_score
         if depth == 0:
-            return None, self.heuristicZ(board)
+            return None, self.heuristic(board)
         
         # recursive case
         best_move = None
