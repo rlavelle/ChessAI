@@ -47,7 +47,7 @@ class OpenAI:
 
         # first match the case to find all cases its similar to
         matched_cases = self.match_cases(board)
-        print(matched_cases)
+        
         # loop through matches
         for case_name, (dist,index) in matched_cases.items():
             # sequentially try and make moves within this opening after the matched moves index
@@ -59,7 +59,7 @@ class OpenAI:
                     return san, self.cases[case_name]["name"]
                 except ValueError:
                     pass
-        print('no valid moves')
+        
         return None, "no opening"
 
     # use hamming distance as case similarity metric
