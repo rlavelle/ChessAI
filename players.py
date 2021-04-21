@@ -82,50 +82,44 @@ class CBRPlayer(AI):
         best_move = None
         
         moves = list(board.legal_moves)
-        prunes = threatMoves(board)
-        noThreats = False if len(prunes[0]) > 0 or len(prunes[1]) > 0 else True
+        usefulMoves = pruneMoves(board)
 
         # maximize
         if board.turn == self.player:
             best_score = -math.inf
             for move in moves:
-                if move.from_square in prunes[0] or move.to_square in prunes[1]:
-                    oldBoard = board.copy()
+                if usefulMoves is not None and (move.from_square in usefulMoves[0] or move.to_square in usefulMoves[1]):
+                    if depth == MAX_DEPTH-1:
+                        print(1, move)
                     board.push(move)
-                    if genericResponse(board, oldBoard, move):
-                        _,score = self.alpha_beta_minimax(board=board,
-                                                    depth=depth-1,
-                                                    alpha=alpha,
-                                                    beta=beta)
-                        board.pop()
-                        if score > best_score:
-                            best_score, best_move = score, move
+                    _,score = self.alpha_beta_minimax(board=board,
+                                                depth=depth-1,
+                                                alpha=alpha,
+                                                beta=beta)
+                    board.pop()
+                    if score > best_score:
+                        best_score, best_move = score, move
 
-                        alpha = max(alpha,score)
-                        if alpha >= beta: break
-                    else:
-                        board.pop()
-                        self.pruned += 1
+                    alpha = max(alpha,score)
+                    if alpha >= beta: break
+                elif usefulMoves is None:
+                    if depth == MAX_DEPTH-1:
+                        print(2, move)
+                    board.push(move)
+                    _,score = self.alpha_beta_minimax(board=board,
+                                                depth=depth-1,
+                                                alpha=alpha,
+                                                beta=beta)
+                    board.pop()
+                    if score > best_score:
+                        best_score, best_move = score, move
+
+                    alpha = max(alpha,score)
+                    if alpha >= beta: break
                 else:
-                    if noThreats:
-                        oldBoard = board.copy()
-                        board.push(move)
-                        if genericResponse(board, oldBoard, move):
-                            _,score = self.alpha_beta_minimax(board=board,
-                                                        depth=depth-1,
-                                                        alpha=alpha,
-                                                        beta=beta)
-                            board.pop()
-                            if score > best_score:
-                                best_score, best_move = score, move
-
-                            alpha = max(alpha,score)
-                            if alpha >= beta: break
-                        else:
-                            board.pop()
-                            self.pruned += 1
-                    else:
-                        self.pruned += 1
+                    if depth == MAX_DEPTH-1:
+                        print(3, move)
+                    self.pruned += 1
         # minimize
         else:
             best_score = math.inf

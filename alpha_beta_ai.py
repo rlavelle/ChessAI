@@ -139,7 +139,7 @@ class AI(ABC):
     """
     def heuristic(self, board):
         # weights for each heuristic
-        weights = {'material': 1, 'positioning': 1, 'threat': 1}
+        weights = {'material': 1, 'positioning': 0.02, 'threat': 0.1}
 
         # find material value heuristic, and positioning heuristic
         material, positioning, threat = 0,0,0
@@ -179,8 +179,9 @@ class AITest(AI):
         pass
     def alpha_beta_minimax(self,board,depth,alpha,beta):
         pass
-if __name__ == "__main__":
-    ai = AITest(chess.WHITE)
-    print(ai.pawn_pst_good)
-    print()
-    print(ai.pawn_pst_bad)
+
+# if __name__ == "__main__":
+#     ai = AITest(chess.WHITE)
+#     print(ai.pawn_pst_good)
+#     print()
+#     print(ai.pawn_pst_bad)
