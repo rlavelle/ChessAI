@@ -4,7 +4,7 @@ import copy
 import math
 import time
 from abc import ABC, abstractmethod
-
+import numpy as np 
 class AI(ABC):
     def __init__(self,player, verbose = False):
         self.player = player
@@ -12,7 +12,18 @@ class AI(ABC):
         self.player_win_score = 10e10
         self.player_lose_score = -10e10
 
-        self.pawn_pst_white = (
+        # self.pawn_pst_white = (
+        #     0,  0,  0,  0,  0,  0,  0,  0,
+        #     50, 50, 50, 50, 50, 50, 50, 50,
+        #     10, 10, 20, 30, 30, 20, 10, 10,
+        #     5,  5, 10, 25, 25, 10,  5,  5,
+        #     0,  0,  0, 20, 20,  0,  0,  0,
+        #     5, -5,-10,  0,  0,-10, -5,  5,
+        #     5, 10, 10,-20,-20, 10, 10,  5,
+        #     0,  0,  0,  0,  0,  0,  0,  0
+        # )
+        # Converted the position tables as 1-d np arrays.
+        self.pawn_pst_white = np.array([
             0,  0,  0,  0,  0,  0,  0,  0,
             50, 50, 50, 50, 50, 50, 50, 50,
             10, 10, 20, 30, 30, 20, 10, 10,
@@ -20,11 +31,11 @@ class AI(ABC):
             0,  0,  0, 20, 20,  0,  0,  0,
             5, -5,-10,  0,  0,-10, -5,  5,
             5, 10, 10,-20,-20, 10, 10,  5,
-            0,  0,  0,  0,  0,  0,  0,  0
+            0,  0,  0,  0,  0,  0,  0,  0]
         )
         self.pawn_pst_black = tuple(reversed(self.pawn_pst_white))
 
-        self.knight_pst_white = (
+        self.knight_pst_white = np.array([
             -50,-40,-30,-30,-30,-30,-40,-50,
             -40,-20,  0,  0,  0,  0,-20,-40,
             -30,  0, 10, 15, 15, 10,  0,-30,
@@ -32,11 +43,11 @@ class AI(ABC):
             -30,  0, 15, 20, 20, 15,  0,-30,
             -30,  5, 10, 15, 15, 10,  5,-30,
             -40,-20,  0,  5,  5,  0,-20,-40,
-            -50,-40,-30,-30,-30,-30,-40,-50,
+            -50,-40,-30,-30,-30,-30,-40,-50]
         )
         self.knight_pst_black = tuple(reversed(self.knight_pst_white))
 
-        self.bishop_pst_white = (
+        self.bishop_pst_white = np.array([
             -20,-10,-10,-10,-10,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
             -10,  0,  5, 10, 10,  5,  0,-10,
@@ -44,11 +55,11 @@ class AI(ABC):
             -10,  0, 10, 10, 10, 10,  0,-10,
             -10, 10, 10, 10, 10, 10, 10,-10,
             -10,  5,  0,  0,  0,  0,  5,-10,
-            -20,-10,-10,-10,-10,-10,-10,-20,
+            -20,-10,-10,-10,-10,-10,-10,-20]
         )
         self.bishop_pst_black = tuple(reversed(self.bishop_pst_white))
 
-        self.rook_pst_white = (
+        self.rook_pst_white = np.array([
              0,  0,  0,  0,  0,  0,  0,  0,
              5, 10, 10, 10, 10, 10, 10,  5,
             -5,  0,  0,  0,  0,  0,  0, -5,
@@ -56,11 +67,11 @@ class AI(ABC):
             -5,  0,  0,  0,  0,  0,  0, -5,
             -5,  0,  0,  0,  0,  0,  0, -5,
             -5,  0,  0,  0,  0,  0,  0, -5,
-             0,  0,  0,  5,  5,  0,  0,  0
+             0,  0,  0,  5,  5,  0,  0,  0]
         )
         self.rook_pst_black = tuple(reversed(self.rook_pst_white))
 
-        self.queen_pst_white = (
+        self.queen_pst_white = np.array([
             -20,-10,-10, -5, -5,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
             -10,  0,  5,  5,  5,  5,  0,-10,
@@ -68,11 +79,11 @@ class AI(ABC):
               0,  0,  5,  5,  5,  5,  0, -5,
             -10,  5,  5,  5,  5,  5,  0,-10,
             -10,  0,  5,  0,  0,  0,  0,-10,
-            -20,-10,-10, -5, -5,-10,-10,-20
+            -20,-10,-10, -5, -5,-10,-10,-20]
         )
         self.queen_pst_black = tuple(reversed(self.queen_pst_white))
 
-        self.king_pst_white = (
+        self.king_pst_white = np.array([
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
@@ -80,7 +91,7 @@ class AI(ABC):
             -20,-30,-30,-40,-40,-30,-30,-20,
             -10,-20,-20,-20,-20,-20,-20,-10,
              20, 20,  0,  0,  0,  0, 20, 20,
-             20, 30, 10,  0,  0, 10, 30, 20
+             20, 30, 10,  0,  0, 10, 30, 20]
         )
         self.king_pst_black = tuple(reversed(self.king_pst_white))
         
