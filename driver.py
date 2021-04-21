@@ -1,7 +1,7 @@
 # Driver class
 # Zach Wilkerson, Rowan Lavelle, Josep Han
 
-from players import RandomPlayer, CBRPlayer
+from players import RandomPlayer, CBRPlayer, BasePlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
 import sys
@@ -18,11 +18,7 @@ def play(white = None, black = None):
         if board.turn == chess.WHITE and white is not None:
             if type(white) == RandomPlayer:
                 white.makeMove(board)
-            elif type(white) == AI:
-                board.push(white.get_best_move(board)[0])
-            elif type(white) == OpenAI:
-                board.push_san(white.get_best_move(board))
-            elif type(white) == CBRPlayer:
+            elif type(white) == CBRPlayer or type(white) == BasePlayer:
                 board.push(white.makeMove(board)[0])
         elif board.turn == chess.WHITE:
             while True:
@@ -40,11 +36,7 @@ def play(white = None, black = None):
         elif board.turn == chess.BLACK and black is not None:
             if type(black) == RandomPlayer:
                 black.makeMove(board)
-            elif type(black) == AI:
-                board.push(black.get_best_move(board)[0])
-            elif type(black) == OpenAI:
-                board.push_san(black.get_best_move(board))
-            elif type(black) == CBRPlayer:
+            elif type(black) == CBRPlayer or type(black) == BasePlayer:
                 board.push(black.makeMove(board)[0])
         elif board.turn == chess.BLACK:
             while True:
@@ -72,25 +64,20 @@ if __name__ == "__main__":
     else:
         arg3 = 5
 
-    if sys.argv[1] == "1":
+    if sys.argv[1] == "0":
         if sys.argv[2] == "w":
             play(RandomPlayer(chess.WHITE), None)
         else:
             play(None, RandomPlayer(chess.BLACK))
-    # elif sys.argv[1] == "2":
-    #     if sys.argv[2] == "w":
-    #         play(AI(chess.WHITE, verbose=False), None)
-    #     else:
-    #         play(None, AI(chess.BLACK, verbose=False))
-    # elif sys.argv[1] == "3":
-    #     if sys.argv[2] == "w":
-    #         play(OpenAI(),AI(chess.BLACK, verbose=False))
-    #     else:
-    #         play(AI(chess.WHITE, verbose=False), OpenAI())
-    elif sys.argv[1] == "4":
+    elif sys.argv[1] == "1":
         if sys.argv[2] == "w":
-            play(None,CBRPlayer(chess.BLACK, verbose=True, depth=arg3))
+            play(BasePlayer(chess.WHITE, depth = arg3), None)
         else:
-            play(CBRPlayer(chess.WHITE, verbose=True, depth=arg3), None)
+            play(None, BasePlayer(chess.BLACK, depth = arg3))
+    elif sys.argv[1] == "2":
+        if sys.argv[2] == "w":
+            play(CBRPlayer(chess.BLACK, verbose=True, depth=arg3), None)
+        else:
+            play(None, CBRPlayer(chess.WHITE, verbose=True, depth=arg3))
 
             
