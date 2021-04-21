@@ -139,7 +139,7 @@ class AI(ABC):
     """
     def heuristic(self, board):
         # weights for each heuristic
-        weights = {'material': 1, 'positioning': 0.02, 'threat': 0.1}
+        weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}
 
         # find material value heuristic, and positioning heuristic
         material, positioning, threat = 0,0,0

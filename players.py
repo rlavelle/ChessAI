@@ -63,6 +63,7 @@ class CBRPlayer(AI):
                     print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, pruned: {self.pruned}')
 
                 k += 1
+            print(best_move, score)
             return best_move,score
 
     def alpha_beta_minimax(self,board,depth,alpha,beta):
@@ -82,14 +83,14 @@ class CBRPlayer(AI):
         best_move = None
         
         moves = list(board.legal_moves)
-        usefulMoves = pruneMoves(board)
 
         # maximize
         if board.turn == self.player:
             best_score = -math.inf
+            usefulMoves = pruneMoves(board)
             for move in moves:
                 if usefulMoves is not None and (move.from_square in usefulMoves[0] or move.to_square in usefulMoves[1]):
-                    if depth == MAX_DEPTH-1:
+                    if depth == self.depth-1:
                         print(1, move)
                     board.push(move)
                     _,score = self.alpha_beta_minimax(board=board,
@@ -103,8 +104,8 @@ class CBRPlayer(AI):
                     alpha = max(alpha,score)
                     if alpha >= beta: break
                 elif usefulMoves is None:
-                    if depth == MAX_DEPTH-1:
-                        print(2, move)
+                    # if depth == self.depth-1:
+                    #     print(2, move)
                     board.push(move)
                     _,score = self.alpha_beta_minimax(board=board,
                                                 depth=depth-1,
@@ -117,8 +118,8 @@ class CBRPlayer(AI):
                     alpha = max(alpha,score)
                     if alpha >= beta: break
                 else:
-                    if depth == MAX_DEPTH-1:
-                        print(3, move)
+                    # if depth == self.depth-1:
+                    #     print(3, move)
                     self.pruned += 1
         # minimize
         else:

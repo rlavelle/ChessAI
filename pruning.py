@@ -17,25 +17,31 @@ materialValue = {
 
 """
 Initial plan = cases and adaptations, retrieved in a rule-based way
-New plan = hierarchy of condition/response rules to determine possible prunings
+Second plan = hierarchy of condition/response rules to determine possible prunings
+Third plan = true rule-based, primed for efficiency and pruning as much as reasonably possible
 """
 
 #Moves to be pruned
 #   Moves that don't improve the activity of pieces (i.e., number of legal moves in future boards)
 #   Moves that lead to an obvious capture
 #   Moves that don't deal with a current threat
-
 #Moves to be kept
 #   Moves that create new threats (esp. if can win the exchange)
 #   Moves that restrict opponent's pieces
 
+#Helper function for determining who will win an exchange on a given square
+#   board = the board object
+#   square = the square of the board in question
+#   initialMaterial = a bias for the exchange (e.g., if the defender just captured a piece last turn)
+#   Returns: The net material value for the first side who can win the exchange (>0 if defender wins, <0 for attacker)
+#               or 0 if the exchange is even
 def evaluateExchange(board:chess.Board, square:chess.Square, initialMaterial:int = 0):
     defenders = board.attackers(board.turn, square)
     attackers = board.attackers(not board.turn, square)
     if len(attackers) == 0:
         return initialMaterial
     elif len(defenders) == 0:
-        return initialMaterial - materialValue[board.piece_at(square)]
+        return initialMaterial - materialValue[board.piece_type_at(square)]
     attackerStrength = []
     for attackingSquare in attackers:
         attackerStrength.append(materialValue[board.piece_type_at(attackingSquare)])
@@ -45,42 +51,54 @@ def evaluateExchange(board:chess.Board, square:chess.Square, initialMaterial:int
         defenderStrength.append(materialValue[board.piece_type_at(defendingSquare)])
         defenderStrength.sort()
     index = 0
-    material = initialMaterial - materialValue[board.piece_at(square)]
+    material = initialMaterial - materialValue[board.piece_type_at(square)]
+    # Assess if either side can win the exchange prematurely (i.e., they won't continue exchanging pieces)
     if material > 0:
         return material
     while True:
         if index < len(defenderStrength):
-            material += attackerStrength[index]
+            try:
+                material += attackerStrength[index]
+            except:
+                print(defenderStrength, attackerStrength, square)
             if material < 0:
                 return material
         else:
             return material
-        if index < len(attackerStrength):
-            material -= defenderStrength[index]
+        if index+1 < len(attackerStrength):
+            try:
+                material -= defenderStrength[index]
+            except:
+                print(defenderStrength, attackerStrength, square)
             if material > 0:
                 return material
         else:
             return material
+        index += 1
 
+# Pruning definition function; returns only "reasonable" moves
+#   board = the board object
+#   Returns: a tuple of SquareSet objects containing valid move_from and move_to squares, respectively
 def pruneMoves(board:chess.Board):
-    prev = board.copy()
     usefulMoves = (chess.SquareSet(), chess.SquareSet())
-    legalMoves = board.legal_moves
+    legalMoves = tuple(board.legal_moves)
     for move in legalMoves:
         # Piece is threatened by an opposing piece
-        if board.is_attacked_by(not board.color, move.from_square):
+        if board.is_attacked_by(not board.turn, move.from_square):
             usefulMoves[0].add(move.from_square)
+        # We can win an exchange
+        elif board.is_capture(move) and evaluateExchange(board, move.to_square, materialValue[board.piece_type_at(move.to_square)]) >= 0:
+            usefulMoves[1].add(move.to_square)
         else:
             board.push(move)
-            if len(board.legal_moves) > len(legalMoves) and evaluateExchange(board, move.to_square) >= 0:
+            # We can make our position more active (and not make a stupid move where we lose the exchange)
+            if len(tuple(board.legal_moves)) > len(legalMoves) and evaluateExchange(board, move.to_square) >= 0:
                 usefulMoves[1].add(move.to_square)
-            elif prev.is_capture(move) and evaluateExchange(board, move.to_square, materialValue[prev.piece_at(move.to_square)]) >= 0:
-                usefulMoves[1].add(move.to_square)
+            board.pop()
     if len(usefulMoves[0]) > 0 or len(usefulMoves[1]) > 0:
         return usefulMoves
     else:
         return None
-
 
 """
 #==================================

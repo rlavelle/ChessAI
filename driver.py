@@ -64,28 +64,33 @@ def play(white = None, black = None):
     print("Game Over")
 
 if __name__ == "__main__":
-    if(len(sys.argv) != 3):
+    if(len(sys.argv) < 3) or (len(sys.argv) > 4):
         raise(Exception("Error: incorrect number of arguments: " + str(len(sys.argv))))
+
+    if len(sys.argv) > 3:
+        arg3 = int(sys.argv[3])
+    else:
+        arg3 = 5
 
     if sys.argv[1] == "1":
         if sys.argv[2] == "w":
             play(RandomPlayer(chess.WHITE), None)
         else:
             play(None, RandomPlayer(chess.BLACK))
-    elif sys.argv[1] == "2":
-        if sys.argv[2] == "w":
-            play(AI(chess.WHITE, verbose=False), None)
-        else:
-            play(None, AI(chess.BLACK, verbose=False))
-    elif sys.argv[1] == "3":
-        if sys.argv[2] == "w":
-            play(OpenAI(),AI(chess.BLACK, verbose=False))
-        else:
-            play(AI(chess.WHITE, verbose=False), OpenAI())
+    # elif sys.argv[1] == "2":
+    #     if sys.argv[2] == "w":
+    #         play(AI(chess.WHITE, verbose=False), None)
+    #     else:
+    #         play(None, AI(chess.BLACK, verbose=False))
+    # elif sys.argv[1] == "3":
+    #     if sys.argv[2] == "w":
+    #         play(OpenAI(),AI(chess.BLACK, verbose=False))
+    #     else:
+    #         play(AI(chess.WHITE, verbose=False), OpenAI())
     elif sys.argv[1] == "4":
         if sys.argv[2] == "w":
-            play(None,CBRPlayer(chess.BLACK, verbose=True))
+            play(None,CBRPlayer(chess.BLACK, verbose=True, depth=arg3))
         else:
-            play(CBRPlayer(chess.WHITE, verbose=True), None)
+            play(CBRPlayer(chess.WHITE, verbose=True, depth=arg3), None)
 
             
