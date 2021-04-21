@@ -6,7 +6,8 @@ import time
 class OpenAI:
     def __init__(self):
         self.cases = self.load_cases()
-    
+        self.moves = []
+
     # load cases in
     def load_cases(self):
         with open('opening-boards.json') as json_file:
@@ -32,7 +33,7 @@ class OpenAI:
             for i, (c,san) in enumerate(self.cases[case_name]['boards']):
                 dist = self.similarity(case_str,c)
                 # get all cases close to the best dist
-                if dist < best_dist+3:
+                if dist < best_dist+2:
                     # only match an opening once so we dont overwrite
                     if case_name not in matched_cases:
                         matched_cases[case_name] = (i,dist)
@@ -56,6 +57,11 @@ class OpenAI:
                 # if its a valid move return it (this is messy lol)
                 try: 
                     board.parse_san(san)
+
+                    # dont repeat moves just because they are available
+                    if san in self.moves: continue
+
+                    self.moves.append(san)
                     return san, self.cases[case_name]["name"]
                 except ValueError:
                     pass
