@@ -76,8 +76,8 @@ if __name__ == "__main__":
             play(None, BasePlayer(chess.BLACK, depth = arg3))
     elif sys.argv[1] == "2":
         if sys.argv[2] == "w":
-            play(CBRPlayer(chess.BLACK, verbose=True, depth=arg3), None)
+            play(CBRPlayer(chess.WHITE, verbose=True, depth=arg3), None)
         else:
-            play(None, CBRPlayer(chess.WHITE, verbose=True, depth=arg3))
+            play(None, CBRPlayer(chess.BLACK, verbose=True, depth=arg3))
 
             

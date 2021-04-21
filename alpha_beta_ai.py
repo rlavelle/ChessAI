@@ -11,6 +11,8 @@ class AI(ABC):
         self.verbose = verbose
         self.player_win_score = 10e10
         self.player_lose_score = -10e10
+        self.heuristicDP = {}
+        self.dynamicProgramming = 0
 
         # self.pawn_pst_white = (
         #     0,  0,  0,  0,  0,  0,  0,  0,
@@ -149,6 +151,11 @@ class AI(ABC):
         their weights.
     """
     def heuristic(self, board):
+
+        if self.heuristicDP.get(board.fen()) is not None:
+            self.dynamicProgramming += 1
+            return self.heuristicDP[board.fen()]
+
         # weights for each heuristic
         weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}
 
@@ -171,8 +178,11 @@ class AI(ABC):
                 # if we are threatening their piece
                 if board.is_attacked_by(self.player, square):
                     threat += 1
-        
-        return material*weights['material'] + positioning*weights['positioning'] + threat*weights['threat']
+
+        result = material*weights['material'] + positioning*weights['positioning'] + threat*weights['threat']
+        self.heuristicDP[board.fen()] = result
+
+        return result
 
     @abstractmethod
     def makeMove(self,board):

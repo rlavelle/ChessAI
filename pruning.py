@@ -87,7 +87,7 @@ def pruneMoves(board:chess.Board):
         if board.is_attacked_by(not board.turn, move.from_square):
             usefulMoves[0].add(move.from_square)
         # We can win an exchange
-        elif board.is_capture(move) and evaluateExchange(board, move.to_square, materialValue[board.piece_type_at(move.to_square)]) >= 0:
+        elif board.is_en_passant(move) or (board.is_capture(move) and evaluateExchange(board, move.to_square, materialValue[board.piece_type_at(move.to_square)]) >= 0):
             usefulMoves[1].add(move.to_square)
         else:
             board.push(move)

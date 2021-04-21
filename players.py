@@ -50,6 +50,7 @@ class CBRPlayer(AI):
             while k < self.depth:
                 self.count = 0
                 self.pruned = 0
+                self.dynamicProgramming = 0
                 
                 start = time.time()
 
@@ -60,7 +61,7 @@ class CBRPlayer(AI):
                 end = time.time()
 
                 if self.verbose:
-                    print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, pruned: {self.pruned}')
+                    print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, pruned: {self.pruned}, DP hits: {self.dynamicProgramming}')
 
                 k += 1
             print(best_move, score)
@@ -151,6 +152,7 @@ class BasePlayer(AI):
         k = 1
         while k < self.depth:
             self.count = 0
+            self.dynamicProgramming = 0
             
             start = time.time()
 
@@ -161,7 +163,7 @@ class BasePlayer(AI):
             end = time.time()
 
             if self.verbose:
-                print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}')
+                print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, DP hits: {self.dynamicProgramming}')
 
             k += 1
         return best_move,score
