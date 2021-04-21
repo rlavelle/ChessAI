@@ -44,7 +44,14 @@ class OpenAI:
     # a board is a case
     def get_best_move(self, board):
         if str(board) == str(chess.Board()):
-            return "e4", "Sicilian" # play the Sicilian
+            return "e4", "Queen's pawn" # play the Sicilian
+
+        # TODO: (Josep) the Sicilian is a response to E4 as a defensive line (ie for black), so in order for us to play the Sicilian line, we must match the board with e4 played. Here's how I may do it:
+        if board.fen() == 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1':
+            return 'c5', 'Sicilian Defense'
+
+
+
 
         # first match the case to find all cases its similar to
         matched_cases = self.match_cases(board)
