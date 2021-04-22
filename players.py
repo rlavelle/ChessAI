@@ -21,8 +21,8 @@ class RandomPlayer:
 
 class CBRPlayer(AI):
 
-    def __init__(self, player:bool, verbose=True, depth = 5):
-        super().__init__(player, verbose)
+    def __init__(self, player:bool, verbose=True, depth = 5, weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}):
+        super().__init__(player, verbose, weights)
         self.open_ai = OpenAI()
         self.use_open = True
         self.depth = depth
@@ -144,8 +144,8 @@ class CBRPlayer(AI):
 # running pure alphabeta; no openAI or threat pruning 
 class BasePlayer(AI):
 
-    def __init__(self, player:bool, verbose=True, depth = 5, time_limit = 300, iterative = True):
-        super().__init__(player, verbose)
+    def __init__(self, player:bool, verbose=True, depth = 5, time_limit = 300, iterative = True, weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}):
+        super().__init__(player, verbose, weights)
         self.depth = depth
         self.iterative = iterative
         self.time_limit = time_limit
