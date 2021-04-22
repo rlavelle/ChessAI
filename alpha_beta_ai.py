@@ -6,13 +6,16 @@ import time
 from abc import ABC, abstractmethod
 import numpy as np 
 class AI(ABC):
-    def __init__(self,player, verbose = False):
+    def __init__(self,player, verbose = False, weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}):
         self.player = player
         self.verbose = verbose
         self.player_win_score = 10e10
         self.player_lose_score = -10e10
         self.heuristicDP = {}
         self.dynamicProgramming = 0
+
+        # weights for each heuristic
+        self.weights = weights
 
         # self.pawn_pst_white = (
         #     0,  0,  0,  0,  0,  0,  0,  0,
@@ -156,9 +159,6 @@ class AI(ABC):
             self.dynamicProgramming += 1
             return self.heuristicDP[board.fen()]
 
-        # weights for each heuristic
-        weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}
-
         # find material value heuristic, and positioning heuristic
         material, positioning, threat = 0,0,0
         for pieceType in (chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN):
@@ -179,7 +179,7 @@ class AI(ABC):
                 if board.is_attacked_by(self.player, square):
                     threat += 1
 
-        result = material*weights['material'] + positioning*weights['positioning'] + threat*weights['threat']
+        result = material*self.weights['material'] + positioning*self.weights['positioning'] + threat*self.weights['threat']
         self.heuristicDP[board.fen()] = result
 
         return result
