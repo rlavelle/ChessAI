@@ -140,33 +140,58 @@ class CBRPlayer(AI):
         
         return best_move, best_score
 
+# running pure alphabeta; no openAI or threat pruning 
 class BasePlayer(AI):
 
-    def __init__(self, player:bool, verbose=True, depth = 5):
+    def __init__(self, player:bool, verbose=True, depth = 5, time_limit = 300, iterative = True):
         super().__init__(player, verbose)
         self.depth = depth
+        self.iterative = iterative
+        self.time_limit = time_limit
         
     def makeMove(self, board:Board):
         # IDS version of alpha beta
 
         k = 1
-        while k < self.depth:
+        start_hard = time.time()
+        if self.iterative:
+            while k < self.depth:
+                self.count = 0
+                self.dynamicProgramming = 0
+                
+                start = time.time()
+                # break the program if it crosses the limit
+                # TODO: implement the k-iterative within alpha-beta. 
+                if abs(time.time() - start_hard) > self.time_limit:
+                    break
+
+                best_move, score = self.alpha_beta_minimax(board=board,
+                                                            depth=k,
+                                                            alpha=-math.inf,
+                                                            beta=math.inf)
+                end = time.time()
+                if self.verbose:
+                    print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, DP hits: {self.dynamicProgramming}')
+
+                k += 1
+            return best_move,score
+        else:
             self.count = 0
             self.dynamicProgramming = 0
             
             start = time.time()
 
             best_move, score = self.alpha_beta_minimax(board=board,
-                                                        depth=k,
+                                                        depth=self.depth,
                                                         alpha=-math.inf,
                                                         beta=math.inf)
             end = time.time()
-
             if self.verbose:
-                print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, DP hits: {self.dynamicProgramming}')
+                print(f'depth: {self.depth}, runtime: {end-start}, states visited: {self.count}, DP hits: {self.dynamicProgramming}')
 
             k += 1
         return best_move,score
+
 
     def alpha_beta_minimax(self,board,depth,alpha,beta):
         self.count += 1
