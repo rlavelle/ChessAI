@@ -36,8 +36,8 @@ Third plan = true rule-based, primed for efficiency and pruning as much as reaso
 #   Returns: The net material value for the first side who can win the exchange (>0 if defender wins, <0 for attacker)
 #               or 0 if the exchange is even
 def evaluateExchange(board:chess.Board, square:chess.Square, initialMaterial:int = 0):
-    defenders = board.attackers(board.turn, square)
-    attackers = board.attackers(not board.turn, square)
+    defenders = board.attackers(not board.turn, square) #This must be done because the defender just moved, so these are reversed
+    attackers = board.attackers(board.turn, square)
     if len(attackers) == 0:
         return initialMaterial
     elif len(defenders) == 0:
@@ -80,22 +80,48 @@ def evaluateExchange(board:chess.Board, square:chess.Square, initialMaterial:int
 #   board = the board object
 #   Returns: a tuple of SquareSet objects containing valid move_from and move_to squares, respectively
 def pruneMoves(board:chess.Board):
+    prev = board.copy()
     usefulMoves = (chess.SquareSet(), chess.SquareSet())
     legalMoves = tuple(board.legal_moves)
     for move in legalMoves:
         # Piece is threatened by an opposing piece
         if board.is_attacked_by(not board.turn, move.from_square):
             usefulMoves[0].add(move.from_square)
-        # We can win an exchange
-        elif board.is_en_passant(move) or (board.is_capture(move) and evaluateExchange(board, move.to_square, materialValue[board.piece_type_at(move.to_square)]) >= 0):
-            usefulMoves[1].add(move.to_square)
         else:
             board.push(move)
             # We can make our position more active (and not make a stupid move where we lose the exchange)
             if len(tuple(board.legal_moves)) > len(legalMoves) and evaluateExchange(board, move.to_square) >= 0:
                 usefulMoves[1].add(move.to_square)
+            # We can win an exchange
+            elif prev.is_en_passant(move) or (prev.is_capture(move) and evaluateExchange(board, move.to_square, materialValue[prev.piece_type_at(move.to_square)]) >= 0):
+                usefulMoves[1].add(move.to_square)
             board.pop()
     if len(usefulMoves[0]) > 0 or len(usefulMoves[1]) > 0:
+        return usefulMoves
+    else:
+        return None
+
+def simplePrune(board:chess.Board):
+    usefulMoves = (chess.SquareSet(), chess.SquareSet())
+    for move in board.legal_moves:
+        if board.is_capture(move):
+            if board.is_en_passant(move):
+                board.push(move)
+                if evaluateExchange(board, move.to_square, 1) >= 0:
+                    usefulMoves[1].add(move.to_square)
+                board.pop()
+            else:
+                capturedValue = materialValue[board.piece_type_at(move.to_square)]
+                board.push(move)
+                if evaluateExchange(board, move.to_square, capturedValue) >= 0:
+                    usefulMoves[1].add(move.to_square)
+                board.pop()
+        else:
+            board.push(move)
+            if evaluateExchange(board, move.to_square) >= 0:
+                usefulMoves[1].add(move.to_square)
+            board.pop()
+    if len(usefulMoves[1]) > 0:
         return usefulMoves
     else:
         return None

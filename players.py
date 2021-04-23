@@ -88,6 +88,7 @@ class CBRPlayer(AI):
         if board.turn == self.player:
             best_score = -math.inf
             usefulMoves = pruneMoves(board)
+            # usefulMoves = simplePrune(board)
             for move in moves:
                 if usefulMoves is not None and (move.from_square in usefulMoves[0] or move.to_square in usefulMoves[1]):
                     # if depth == self.depth-1:
@@ -126,18 +127,35 @@ class CBRPlayer(AI):
         # minimize
         else:
             best_score = math.inf
+            # usefulMoves = pruneMoves(board)
+            usefulMoves = simplePrune(board)
             for move in moves:
-                board.push(move)
-                _,score = self.alpha_beta_minimax(board=board,
-                                                  depth=depth-1,
-                                                  alpha=alpha,
-                                                  beta=beta)
-                board.pop()
-                if score < best_score:
-                    best_score, best_move = score, move
+                if usefulMoves is not None and (move.from_square in usefulMoves[0] or move.to_square in usefulMoves[1]):
+                    board.push(move)
+                    _,score = self.alpha_beta_minimax(board=board,
+                                                depth=depth-1,
+                                                alpha=alpha,
+                                                beta=beta)
+                    board.pop()
+                    if score < best_score:
+                        best_score, best_move = score, move
 
-                beta = min(beta,score)
-                if alpha >= beta: break 
+                    beta = min(beta,score)
+                    if alpha >= beta: break
+                elif usefulMoves is None:
+                    board.push(move)
+                    _,score = self.alpha_beta_minimax(board=board,
+                                                depth=depth-1,
+                                                alpha=alpha,
+                                                beta=beta)
+                    board.pop()
+                    if score < best_score:
+                        best_score, best_move = score, move
+
+                    beta = min(beta,score)
+                    if alpha >= beta: break
+                else:
+                    self.pruned += 1
         
         return best_move, best_score
 

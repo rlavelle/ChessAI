@@ -4,6 +4,7 @@
 from players import RandomPlayer, CBRPlayer, BasePlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
+from pruning import evaluateExchange
 import sys
 import chess
 
@@ -27,6 +28,8 @@ def play(white = None, black = None):
                 if move == "q":
                     print("Game aborted")
                     return
+                elif move == "get":
+                    print(board.fen())
                 else:
                     try:
                         board.push(board.parse_san(move))
@@ -45,6 +48,8 @@ def play(white = None, black = None):
                 if move == "q":
                     print("Game aborted")
                     return
+                elif move == "get":
+                    print(board.fen())
                 else:
                     try:
                         board.push(board.parse_san(move))
@@ -56,8 +61,11 @@ def play(white = None, black = None):
     print("Game Over")
 
 if __name__ == "__main__":
-    if(len(sys.argv) < 3) or (len(sys.argv) > 4):
+    if(len(sys.argv) < 2) or (len(sys.argv) > 4):
         raise(Exception("Error: incorrect number of arguments: " + str(len(sys.argv))))
+
+    if (len(sys.argv) == 2):
+        board = chess.Board(sys.argv[1])
 
     if len(sys.argv) > 3:
         arg3 = int(sys.argv[3])
@@ -79,5 +87,9 @@ if __name__ == "__main__":
             play(CBRPlayer(chess.WHITE, verbose=True, depth=arg3), None)
         else:
             play(None, CBRPlayer(chess.BLACK, verbose=True, depth=arg3))
+    else:
+        board = chess.Board(sys.argv[1])
+        print(board)
+        print(evaluateExchange(board, chess.parse_square(sys.argv[2])))
 
             
