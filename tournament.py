@@ -13,7 +13,7 @@ np.random.seed(47)
 def tournament(n):
     # base players
     players = [gen_players() for _ in range(n)]
-    n_generations = 1
+    n_generations = 100
     j = 0
 
     while j < n_generations:
