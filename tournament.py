@@ -13,7 +13,7 @@ np.random.seed(47)
 def tournament(n):
     # base players
     players = [gen_players() for _ in range(n)]
-    n_generations = 100
+    n_generations = 10
     j = 0
 
     while j < n_generations:
@@ -80,7 +80,7 @@ def breed_child(parent_a, parent_b):
                'positioning': position_weight,
                'threat': threat_weight}
     
-    return BasePlayer(player=None, depth=5, verbose=False, weights=weights)
+    return CBRPlayer(player=None, depth=5, verbose=False, weights=weights)
 
 # generate player of given color
 def gen_players():
@@ -97,7 +97,7 @@ def gen_players():
                'positioning': position_weight,
                'threat': threat_weight}
 
-    return BasePlayer(player=None, depth=5, verbose=False, weights=weights)
+    return CBRPlayer(player=None, depth=5, verbose=False, weights=weights)
 
 
 def play_game(white:AI, black:AI, verbose = False):
