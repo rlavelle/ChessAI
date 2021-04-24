@@ -99,8 +99,8 @@ class CBRPlayer(AI):
                                                 alpha=alpha,
                                                 beta=beta)
                     board.pop()
-                    if depth == self.depth-1:
-                        print(move, score)
+                    # if depth == self.depth-1:
+                    #     print(move, score)
                     if score > best_score:
                         best_score, best_move = score, move
 
@@ -241,8 +241,8 @@ class BasePlayer(AI):
                                             alpha=alpha,
                                             beta=beta)
                 board.pop()
-                if depth == self.depth-1:
-                    print(move, score)
+                # if depth == self.depth-1:
+                #     print(move, score)
                 if score > best_score:
                     best_score, best_move = score, move
 
