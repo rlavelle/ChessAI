@@ -32,7 +32,7 @@ def tournament(n):
         winners = set()
         for i,(white,black) in enumerate(matches):
             print(f'match {i}/{len(matches)}')
-            winners.append(play_game(white,black))
+            winners.add(play_game(white,black))
         
         # have each pair of winners make a child
         children = breed_children(winners)
