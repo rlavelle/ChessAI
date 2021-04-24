@@ -4,32 +4,86 @@ from opening import OpenAI
 import sys
 import chess
 import numpy as np
+import random
+import json
 np.random.seed(47)
 
 # {'material': 1, 'positioning': 0.02, 'threat': 0.05}
 
 def tournament(n):
-    # generate n/2 random white/black players with random weights
-    whites = [gen_players(chess.WHITE) for _ in range(n//2)]
-    blacks = [gen_players(chess.BLACK) for _ in range(n//2)]
+    # base players
+    players = [gen_players() for _ in range(n)]
+    n_generations = 1
+    j = 0
 
-    # have each white player play each black player
-    matches = []
-    for white in whites:
-        for black in blacks:
-            matches.append((white,black))
+    while j < n_generations:
+        print(f'generation: {j}')
+        # setup matches
+        # have each player play each player
+        matches = []
+        for white in players:
+            for black in players:
+                if white == black: continue
+                white.player = chess.WHITE
+                black.player = chess.BLACK
+                matches.append((white,black))
+        
+        # play all matches out and collect winners
+        winners = set()
+        for i,(white,black) in enumerate(matches):
+            print(f'match {i}/{len(matches)}')
+            winners.append(play_game(white,black))
+        
+        # have each pair of winners make a child
+        children = breed_children(winners)
+
+        # this will be n*n children, sample n of them to be the new players
+        players = random.sample(children, n)
+
+        j += 1
     
-    # play all matches out and collect winners
-    winners = []
-    for i,(white,black) in enumerate(matches):
-        print(f'match {i}/{len(matches)}')
-        winners.append(play_game(white,black))
+    results = {}
+    for winner in winners:
+        results[hash(winner)] = winner.weights
+        print(winner.weights)
     
-    print(f'black winners: {len([w for w in winners if w.player == chess.BLACK])}')
-    print(f'white winners: {len([w for w in winners if w.player == chess.WHITE])}')
+    dump = json.dumps(results)
+    output_file = open('genetic_results.json', 'w')
+    output_file.write(dump)
+    output_file.close()
+
+def breed_children(parents):
+    # pair each of the parents and have them make a child
+    children = []
+    for parent_a in parents:
+        for parent_b in parents:
+            if parent_a == parent_b: continue
+            children.append(breed_child(parent_a,parent_b))
+    
+    return children
+
+def breed_child(parent_a, parent_b):
+    # crossover
+    material_weight = parent_a.weights['material'] if np.random.random() < 0.5 else parent_b.weights['material']
+    position_weight = parent_a.weights['positioning'] if np.random.random() < 0.5 else parent_b.weights['positioning']
+    threat_weight = parent_a.weights['threat'] if np.random.random() < 0.5 else parent_b.weights['threat']
+
+    # mutation 5% chance
+    if np.random.random() < 0.05:
+        material_weight = np.random.random()*10
+    if np.random.random() < 0.05:
+        position_weight = np.random.random()
+    if np.random.random() < 0.05:
+        threat_weight = np.random.random()*5
+
+    weights = {'material': material_weight, 
+               'positioning': position_weight,
+               'threat': threat_weight}
+    
+    return BasePlayer(player=None, depth=5, verbose=False, weights=weights)
 
 # generate player of given color
-def gen_players(color):
+def gen_players():
     # random weight between 0 and 10
     material_weight = np.random.random()*10
 
@@ -43,7 +97,7 @@ def gen_players(color):
                'positioning': position_weight,
                'threat': threat_weight}
 
-    return BasePlayer(player=color, depth=5, weights=weights)
+    return BasePlayer(player=None, depth=5, verbose=False, weights=weights)
 
 
 def play_game(white:AI, black:AI, verbose = False):
@@ -74,4 +128,4 @@ def play_game(white:AI, black:AI, verbose = False):
 
     
 if __name__ == "__main__":
-    tournament(10)
+    tournament(n=10)
