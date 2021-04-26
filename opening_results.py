@@ -52,7 +52,10 @@ def play_game(white:AI, black:AI, verbose = False):
             else:
                 break
         elif board.turn == chess.BLACK:
-            board.push(black.makeMove(board)[0])
+            if type(black) == RandomPlayer:
+                black.makeMove(board)
+            else:
+                board.push(black.makeMove(board)[0])
         
         if verbose:
             print(board)
