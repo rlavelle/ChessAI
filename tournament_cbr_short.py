@@ -13,7 +13,7 @@ np.random.seed(47)
 def tournament(n):
     # base players
     players = [gen_players() for _ in range(n)]
-    n_generations = 10
+    n_generations = 5
     j = 0
 
     while j < n_generations:
@@ -48,7 +48,7 @@ def tournament(n):
         print(winner.weights)
     
     dump = json.dumps(results)
-    output_file = open('genetic_results_cbr.json', 'w')
+    output_file = open('genetic_results_cbr_5.json', 'w')
     output_file.write(dump)
     output_file.close()
 

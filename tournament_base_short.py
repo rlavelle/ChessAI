@@ -48,7 +48,7 @@ def tournament(n):
         print(winner.weights)
     
     dump = json.dumps(results)
-    output_file = open('genetic_results_cbr.json', 'w')
+    output_file = open('genetic_results_base_5.json', 'w')
     output_file.write(dump)
     output_file.close()
 
@@ -80,7 +80,7 @@ def breed_child(parent_a, parent_b):
                'positioning': position_weight,
                'threat': threat_weight}
     
-    return CBRPlayer(player=None, depth=5, verbose=False, weights=weights)
+    return BasePlayer(player=None, depth=5, verbose=False, weights=weights)
 
 # generate player of given color
 def gen_players():
@@ -97,7 +97,7 @@ def gen_players():
                'positioning': position_weight,
                'threat': threat_weight}
 
-    return CBRPlayer(player=None, depth=5, verbose=False, weights=weights)
+    return BasePlayer(player=None, depth=5, verbose=False, weights=weights)
 
 
 def play_game(white:AI, black:AI, verbose = False):
