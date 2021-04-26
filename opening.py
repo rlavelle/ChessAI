@@ -36,7 +36,7 @@ class OpenAI:
                 if dist < best_dist+2:
                     # only match an opening once so we dont overwrite
                     if case_name not in matched_cases:
-                        matched_cases[case_name] = (i,dist)
+                        matched_cases[case_name] = (i,dist,len(self.cases[case_name]['boards']))
 
         return matched_cases
     
@@ -56,8 +56,16 @@ class OpenAI:
         # first match the case to find all cases its similar to
         matched_cases = self.match_cases(board)
         
+        # sort the cases by longest sequence of opening moves
+        sorted_keys = sorted(matched_cases, key=lambda n: matched_cases[n][2], reverse=True)
+        
+        # rebuild matched cases using sorted_keys (dicts retain order in python 3.8+)
+        sorted_cases = {}
+        for key in sorted_keys:
+            sorted_cases[key] = matched_cases[key]
+
         # loop through matches
-        for case_name, (dist,index) in matched_cases.items():
+        for case_name, (dist,index,_) in sorted_cases.items():
             # sequentially try and make moves within this opening after the matched moves index
             # this is trying to play through the opening from the matched case. 
             for _,san in self.cases[case_name]['boards'][index:]:
