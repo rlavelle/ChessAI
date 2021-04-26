@@ -28,12 +28,17 @@ def tournament(n):
                 black.player = chess.BLACK
                 matches.append((white,black))
         
+        wins = {p: 0 for p in players}
+
         # play all matches out and collect winners
-        winners = set()
         for i,(white,black) in enumerate(matches):
             print(f'match {i}/{len(matches)}')
-            winners.add(play_game(white,black))
-        
+            winner = play_game(white,black)
+            wins[winner] += 1
+
+        # selected top3  winners
+        winners = sorted(wins,key=wins.get)[:3]
+
         # have each pair of winners make a child
         children = breed_children(winners)
 
