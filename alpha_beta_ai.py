@@ -184,6 +184,16 @@ class AI(ABC):
 
         return result
 
+    def __eq__(self, other):
+        if type(other) != AI:
+            return False
+        if self.weights == other.weights:
+            return True
+        return False
+    
+    def __hash__(self):
+        return hash(frozenset(self.weights))
+
     @abstractmethod
     def makeMove(self,board):
         pass
