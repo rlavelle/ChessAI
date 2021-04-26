@@ -12,7 +12,7 @@ def gen_avg_opening_moves():
     for i in range(n_games):
         # our player
         player_a = CBRPlayer(chess.WHITE, verbose=False)
-        
+
         print(f'game {i}')
 
         print(f'cbr playing...')
@@ -33,6 +33,7 @@ def gen_avg_opening_moves():
         print('', flush=True)
     
     return sum(cbr_open)/n_games, sum(random_open)/n_games, sum(base_open)/n_games
+
 def play_game(white:AI, black:AI, verbose = False):
     moves = 0
     
@@ -60,6 +61,10 @@ def play_game(white:AI, black:AI, verbose = False):
 
 if __name__ == "__main__":
     avg_cbr, avg_random, avg_base = gen_avg_opening_moves()
+    print(f'cbr v. cbr average number of opening moves {avg_cbr}')
+    print(f'cbr v. random player average number of opening moves {avg_random}')
+    print(f'cbr v. base player average number of opening moves {avg_base}')
+
 
 
 
