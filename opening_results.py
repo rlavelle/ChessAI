@@ -70,6 +70,8 @@ if __name__ == "__main__":
     print(f'cbr v. random player average number of opening moves {avg_random}')
     print(f'cbr v. base player average number of opening moves {avg_base}')
 
-
+    # cbr v. cbr average number of opening moves 13.0
+    # cbr v. random player average number of opening moves 5.8
+    # cbr v. base player average number of opening moves 12.0
 
 

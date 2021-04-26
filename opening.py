@@ -57,15 +57,15 @@ class OpenAI:
         matched_cases = self.match_cases(board)
         
         # sort the cases by longest sequence of opening moves
-        sorted_keys = sorted(matched_cases, key=lambda n: matched_cases[n][2], reverse=True)
+        #sorted_keys = sorted(matched_cases, key=lambda n: matched_cases[n][2], reverse=True)
         
         # rebuild matched cases using sorted_keys (dicts retain order in python 3.8+)
-        sorted_cases = {}
-        for key in sorted_keys:
-            sorted_cases[key] = matched_cases[key]
+        #sorted_cases = {}
+        #for key in sorted_keys:
+        #    sorted_cases[key] = matched_cases[key]
 
         # loop through matches
-        for case_name, (dist,index,_) in sorted_cases.items():
+        for case_name, (dist,index,_) in matched_cases.items():
             # sequentially try and make moves within this opening after the matched moves index
             # this is trying to play through the opening from the matched case. 
             for _,san in self.cases[case_name]['boards'][index:]:
