@@ -10,23 +10,24 @@ def gen_avg_opening_moves():
     base_open = []
 
     for i in range(n_games):
-        # our player
-        player_a = CBRPlayer(chess.WHITE, verbose=False)
-
         print(f'game {i}')
 
         print(f'cbr playing...')
         # cbr opening move counting
+        # our player
+        player_a = CBRPlayer(chess.WHITE, verbose=False)
         player_b = CBRPlayer(chess.BLACK, verbose=False)
         cbr_open.append(play_game(player_a,player_b))
 
         print(f'random playing...')
         # random opening counter
+        player_a = CBRPlayer(chess.WHITE, verbose=False)
         player_b = RandomPlayer(chess.BLACK)
         random_open.append(play_game(player_a,player_b))
 
         print(f'base player playing...')
         # base opening counter
+        player_a = CBRPlayer(chess.WHITE, verbose=False)
         player_b = BasePlayer(chess.BLACK, verbose=False)
         base_open.append(play_game(player_a,player_b))
 
@@ -42,6 +43,7 @@ def play_game(white:AI, black:AI, verbose = False):
     if verbose:
         print(board)
         print()
+        
     while True:
         if board.turn == chess.WHITE:
             board.push(white.makeMove(board)[0])
