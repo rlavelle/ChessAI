@@ -22,13 +22,14 @@ def evaluate_gamefile(filename, eval_type = 'base',depth = 5, iterative = True):
     board = game.board()
     cbr = BasePlayer(chess.WHITE, verbose=True, depth = depth, iterative = iterative)
     if eval_type == 'rule':
-        cbr = PruningPlayer(chess.WHITE, verbose = True, depth= depth )
+        cbr = PruningPlayer(chess.WHITE, verbose = True, depth= depth + 1)
 
     count = 1
     rec_moves = []
     moves = []
     board_configs = []
     time_taken = []
+    # states_visited = []
     for move in game.mainline_moves():
         print(board.san(move))
         board.push(move)
@@ -44,8 +45,8 @@ def evaluate_gamefile(filename, eval_type = 'base',depth = 5, iterative = True):
             moves.append(damove[1])
         board_configs.append(board)
         time_taken.append(abs(starttime - time.time()))
-    print('time taken: ' , np.mean(time_taken), 'total time:', sum(time_taken))
-    return game, rec_moves, moves, board_configs, time_taken, time_taken[-1]
+    print('time taken: ' , np.mean(time_taken), 'total time:', time_taken[-1])
+    return game, moves, board_configs, time_taken, time_taken[-1], rec_moves
 
 
 def save_game_eval(eval, filename):
