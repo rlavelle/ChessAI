@@ -1,8 +1,6 @@
 # Rule-based/case-based hybrid system for move pruning
 # Zach Wilkerson
 
-# from cbr import Feature, Case, CaseBase
-# from functions import *
 from sys import maxsize
 import chess
 
@@ -20,14 +18,6 @@ Initial plan = cases and adaptations, retrieved in a rule-based way
 Second plan = hierarchy of condition/response rules to determine possible prunings
 Third plan = true rule-based, primed for efficiency and pruning as much as reasonably possible
 """
-
-#Moves to be pruned
-#   Moves that don't improve the activity of pieces (i.e., number of legal moves in future boards)
-#   Moves that lead to an obvious capture
-#   Moves that don't deal with a current threat
-#Moves to be kept
-#   Moves that create new threats (esp. if can win the exchange)
-#   Moves that restrict opponent's pieces
 
 #Helper function for determining who will win an exchange on a given square
 #   board = the board object
@@ -52,24 +42,18 @@ def evaluateExchange(board:chess.Board, square:chess.Square, initialMaterial:int
         defenderStrength.sort()
     index = 0
     material = initialMaterial - materialValue[board.piece_type_at(square)]
-    # Assess if either side can win the exchange prematurely (i.e., they won't continue exchanging pieces)
+    # Assess if either side can win the exchange prematurely (i.e., they won't continue exchanging pieces if this happens)
     if material > 0:
         return material
     while True:
         if index < len(defenderStrength):
-            try:
-                material += attackerStrength[index]
-            except:
-                print(defenderStrength, attackerStrength, square)
+            material += attackerStrength[index]
             if material < 0:
                 return material
         else:
             return material
         if index+1 < len(attackerStrength):
-            try:
-                material -= defenderStrength[index]
-            except:
-                print(defenderStrength, attackerStrength, square)
+            material -= defenderStrength[index]
             if material > 0:
                 return material
         else:
@@ -78,7 +62,7 @@ def evaluateExchange(board:chess.Board, square:chess.Square, initialMaterial:int
 
 # Pruning definition function; returns only "reasonable" moves
 #   board = the board object
-#   Returns: a tuple of SquareSet objects containing valid move_from and move_to squares, respectively
+#   Returns: a tuple of SquareSet objects containing valid move_from and move_to squares, respectively, or None if all moves are pruned
 def pruneMoves(board:chess.Board):
     prev = board.copy()
     usefulMoves = (chess.SquareSet(), chess.SquareSet())
@@ -101,21 +85,27 @@ def pruneMoves(board:chess.Board):
     else:
         return None
 
+# Simple pruning function that only avoids bad exchanges
+#   board = the board object
+#   Returns: a tuple of SquareSet objects as in pruneMoves, or None if no moves meet the criteria
 def simplePrune(board:chess.Board):
     usefulMoves = (chess.SquareSet(), chess.SquareSet())
     for move in board.legal_moves:
         if board.is_capture(move):
+            # en passant capture
             if board.is_en_passant(move):
                 board.push(move)
                 if evaluateExchange(board, move.to_square, 1) >= 0:
                     usefulMoves[1].add(move.to_square)
                 board.pop()
+            # regular capture before evaluating the exchange post-move
             else:
                 capturedValue = materialValue[board.piece_type_at(move.to_square)]
                 board.push(move)
                 if evaluateExchange(board, move.to_square, capturedValue) >= 0:
                     usefulMoves[1].add(move.to_square)
                 board.pop()
+        # No capture, just moving the piece
         else:
             board.push(move)
             if evaluateExchange(board, move.to_square) >= 0:
@@ -125,6 +115,9 @@ def simplePrune(board:chess.Board):
         return usefulMoves
     else:
         return None
+
+
+# Obsolete code below, but these give insight into the previous versions, esp. the second plan
 
 """
 #==================================

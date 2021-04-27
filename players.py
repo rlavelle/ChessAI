@@ -1,10 +1,9 @@
 # Player classes
 # Zach Wilkerson, Rowan Lavelle, Josep Han
 
-# from board import Board
 import random
 import chess
-from pruning import *
+from pruning import pruneMoves, simplePrune
 from alpha_beta_ai import AI
 import time
 import math
@@ -27,7 +26,7 @@ class PruningPlayer(AI):
         self.use_open = True
         self.depth = depth
 
-    def makeMove(self, board:chess.Board):
+    def makeMove(self, board:chess.Board, outparam = None):
         # IDS version of alpha beta
 
         san_move = None
@@ -42,9 +41,17 @@ class PruningPlayer(AI):
             if self.verbose:
                 print(f'playing {opening}')
 
+            if outparam is not None:
+                moveNumber = max(tuple(outparam.keys())) + 1
+                outparam[moveNumber] = (best_move, 0)
+
             return best_move,score
         else:
             self.use_open = False
+
+            if outparam is not None:
+                moveNumber = max(tuple(outparam.keys())) + 1
+                outparam[moveNumber] = {}
             
             k = 1
             while k < self.depth:
@@ -60,11 +67,17 @@ class PruningPlayer(AI):
                                                            beta=math.inf)
                 end = time.time()
 
+                if outparam is not None:
+                    outparam[moveNumber][k] = (best_move, end-start, self.count, self.pruned, self.dynamicProgramming)
+
                 if self.verbose:
                     print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, pruned: {self.pruned}, DP hits: {self.dynamicProgramming}')
                     print(k, best_move, score)
                 k += 1
-            return best_move,score
+            if outparam is None:
+                return best_move,score
+            else:
+                return best_move, score, outparam
 
     def alpha_beta_minimax(self,board,depth,alpha,beta):
         self.count += 1
@@ -91,24 +104,18 @@ class PruningPlayer(AI):
             # usefulMoves = simplePrune(board)
             for move in moves:
                 if usefulMoves is not None and (move.from_square in usefulMoves[0] or move.to_square in usefulMoves[1]):
-                    # if depth == self.depth-1:
-                    #     print(1, move)
                     board.push(move)
                     _,score = self.alpha_beta_minimax(board=board,
                                                 depth=depth-1,
                                                 alpha=alpha,
                                                 beta=beta)
                     board.pop()
-                    # if depth == self.depth-1:
-                    #     print(move, score)
                     if score > best_score:
                         best_score, best_move = score, move
 
                     alpha = max(alpha,score)
                     if alpha >= beta: break
                 elif usefulMoves is None:
-                    # if depth == self.depth-1:
-                    #     print(2, move)
                     board.push(move)
                     _,score = self.alpha_beta_minimax(board=board,
                                                 depth=depth-1,
@@ -121,13 +128,10 @@ class PruningPlayer(AI):
                     alpha = max(alpha,score)
                     if alpha >= beta: break
                 else:
-                    # if depth == self.depth-1:
-                    #     print(3, move)
                     self.pruned += 1
         # minimize
         else:
             best_score = math.inf
-            # usefulMoves = pruneMoves(board)
             usefulMoves = simplePrune(board)
             for move in moves:
                 if usefulMoves is not None and (move.from_square in usefulMoves[0] or move.to_square in usefulMoves[1]):
@@ -168,13 +172,18 @@ class BasePlayer(AI):
         self.iterative = iterative
         self.time_limit = time_limit
         
-    def makeMove(self, board:chess.Board):
+    def makeMove(self, board:chess.Board, outparam = None):
         # IDS version of alpha beta
 
         k = 1
         start_hard = time.time()
         if self.iterative == True:
             # print('!!!!!', self.iterative)
+
+            if outparam is not None:
+                moveNumber = max(tuple(outparam.keys())) + 1
+                outparam[moveNumber] = {}
+
             while k < self.depth:
                 self.count = 0
                 self.dynamicProgramming = 0
@@ -190,11 +199,18 @@ class BasePlayer(AI):
                                                             alpha=-math.inf,
                                                             beta=math.inf)
                 end = time.time()
+
+                if outparam is not None:
+                    outparam[moveNumber][k] = (best_move, end-start, self.count, 0, self.dynamicProgramming)
+
                 if self.verbose:
                     print(f'depth: {k}, runtime: {end-start}, states visited: {self.count}, DP hits: {self.dynamicProgramming}')
 
                 k += 1
-            return best_move,score
+            if outparam is None:
+                return best_move,score
+            else:
+                return best_move, score, outparam
         else:
             self.count = 0
             self.dynamicProgramming = 0
@@ -235,7 +251,6 @@ class BasePlayer(AI):
         if board.turn == self.player:
             best_score = -math.inf
             for move in moves:
-                oldBoard = board.copy()
                 board.push(move)
                 _,score = self.alpha_beta_minimax(board=board,
                                             depth=depth-1,
@@ -266,10 +281,7 @@ class BasePlayer(AI):
                 if alpha >= beta: break 
         
         return best_move, best_score
-    
 
-
-    
 
 if __name__ == "__main__":
     board = chess.Board(fen='3r1k2/1pQ5/2B2pp1/p7/2P1P3/2K2P2/PP6/7R w - - 1 38')

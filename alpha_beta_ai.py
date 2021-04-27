@@ -1,5 +1,4 @@
 import chess
-# from functions import *
 import copy
 import math
 import time
@@ -195,7 +194,7 @@ class AI(ABC):
         return hash(frozenset(self.weights))
 
     @abstractmethod
-    def makeMove(self,board):
+    def makeMove(self,board,outparam=None):
         pass
 
     @abstractmethod
