@@ -1,8 +1,8 @@
 # Rule-based/case-based hybrid system for move pruning
 # Zach Wilkerson
 
-from cbr import Feature, Case, CaseBase
-from functions import *
+# from cbr import Feature, Case, CaseBase
+# from functions import *
 from sys import maxsize
 import chess
 

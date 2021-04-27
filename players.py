@@ -1,7 +1,7 @@
 # Player classes
 # Zach Wilkerson, Rowan Lavelle, Josep Han
 
-from board import Board
+# from board import Board
 import random
 import chess
 from pruning import *
@@ -19,7 +19,7 @@ class RandomPlayer:
     def makeMove(self, board):
         board.push(random.sample(list(board.legal_moves), 1)[0])
 
-class CBRPlayer(AI):
+class PruningPlayer(AI):
 
     def __init__(self, player:bool, verbose=True, depth = 5, weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}):
         super().__init__(player, verbose, weights)
@@ -27,7 +27,7 @@ class CBRPlayer(AI):
         self.use_open = True
         self.depth = depth
 
-    def makeMove(self, board:Board):
+    def makeMove(self, board:chess.Board):
         # IDS version of alpha beta
 
         san_move = None
@@ -168,7 +168,7 @@ class BasePlayer(AI):
         self.iterative = iterative
         self.time_limit = time_limit
         
-    def makeMove(self, board:Board):
+    def makeMove(self, board:chess.Board):
         # IDS version of alpha beta
 
         k = 1

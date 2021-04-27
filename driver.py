@@ -1,7 +1,7 @@
 # Driver class
 # Zach Wilkerson, Rowan Lavelle, Josep Han
 
-from players import RandomPlayer, CBRPlayer, BasePlayer
+from players import RandomPlayer, PruningPlayer, BasePlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
 from pruning import evaluateExchange
@@ -19,7 +19,7 @@ def play(white = None, black = None):
         if board.turn == chess.WHITE and white is not None:
             if type(white) == RandomPlayer:
                 white.makeMove(board)
-            elif type(white) == CBRPlayer or type(white) == BasePlayer:
+            elif type(white) == PruningPlayer or type(white) == BasePlayer:
                 board.push(white.makeMove(board)[0])
         elif board.turn == chess.WHITE:
             while True:
@@ -39,7 +39,7 @@ def play(white = None, black = None):
         elif board.turn == chess.BLACK and black is not None:
             if type(black) == RandomPlayer:
                 black.makeMove(board)
-            elif type(black) == CBRPlayer or type(black) == BasePlayer:
+            elif type(black) == PruningPlayer or type(black) == BasePlayer:
                 board.push(black.makeMove(board)[0])
         elif board.turn == chess.BLACK:
             while True:
@@ -84,9 +84,9 @@ if __name__ == "__main__":
             play(None, BasePlayer(chess.BLACK, depth = arg3))
     elif sys.argv[1] == "2":
         if sys.argv[2] == "w":
-            play(CBRPlayer(chess.WHITE, verbose=True, depth=arg3), None)
+            play(PruningPlayer(chess.WHITE, verbose=True, depth=arg3), None)
         else:
-            play(None, CBRPlayer(chess.BLACK, verbose=True, depth=arg3))
+            play(None, PruningPlayer(chess.BLACK, verbose=True, depth=arg3))
     else:
         board = chess.Board(sys.argv[1])
         print(board)

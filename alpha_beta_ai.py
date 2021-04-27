@@ -1,5 +1,5 @@
 import chess
-from functions import *
+# from functions import *
 import copy
 import math
 import time
