@@ -4,7 +4,7 @@ from players import BasePlayer
 import chess
 from chess import pgn
 from chess import svg
-from players import RandomPlayer, CBRPlayer
+from players import RandomPlayer, PruningPlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
 import time 
@@ -21,8 +21,8 @@ def evaluate_gamefile(filename, eval_type = 'base',depth = 5, iterative = True):
     # playing through a low rated game
     board = game.board()
     cbr = BasePlayer(chess.WHITE, verbose=True, depth = depth, iterative = iterative)
-    if eval_type == 'cbr':
-        cbr = CBRPlayer(chess.WHITE, verbose = True, depth= depth + 1)
+    if eval_type == 'rule':
+        cbr = PruningPlayer(chess.WHITE, verbose = True, depth= depth )
 
     count = 1
     rec_moves = []
