@@ -173,7 +173,8 @@ class BasePlayer(AI):
 
         k = 1
         start_hard = time.time()
-        if self.iterative:
+        if self.iterative == True:
+            # print('!!!!!', self.iterative)
             while k < self.depth:
                 self.count = 0
                 self.dynamicProgramming = 0
