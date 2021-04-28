@@ -93,7 +93,7 @@ class PruningPlayer(AI):
             elif terminal.winner is not None:
                 return None, self.player_lose_score
             else:
-                return 0
+                return None, 0
         if depth == 0:
             return None, self.heuristic(board)
         
