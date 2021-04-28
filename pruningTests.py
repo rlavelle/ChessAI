@@ -9,7 +9,7 @@ import sys
 import chess
 
 def synthesizeData(data, player1, player2, k, weights):
-    record = open("./Zach_data/" + player1 + "_" + player2 + "_" + str(k) + ".csv", "w")
+    record = open("./Zach_data/" + player1 + "_" + player2 + "_" + str(k) + "_" + str(weights["material"]) + str(weights["positioning"]) + str(weights["threat"]) + ".csv", "w")
     for key in weights.keys():
         record.write(key + "," + str(weights[key]) + "\n")
     record.write("move #, depth, move, time, visited, pruned, DP hits\n")
