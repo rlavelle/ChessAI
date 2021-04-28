@@ -83,22 +83,24 @@ One of the most interesting unexpected conclusions of this project occurred in e
 \begin{figure*}
     \center
 
-    \includegraphics[scale= 0.5]{low_game_eval.jpg}
-    \includegraphics[scale= 0.5]{low_game_time.jpg}
-    \includegraphics[scale= 0.5]{mid_game_score.jpg}
-    \includegraphics[scale= 0.5]{mid_game_time.jpg}
-    \includegraphics[scale= 0.5]{high_game_eval.jpg}
-    \includegraphics[scale= 0.5]{high_game_time.jpg}
+    \includegraphics[scale= 0.35]{low_game_eval.jpg}
+    \includegraphics[scale= 0.35]{mid_game_eval.jpg}
+    \includegraphics[scale= 0.35]{high_game_eval.jpg}
+
+    \includegraphics[scale= 0.35]{low_game_time.jpg}
+    \includegraphics[scale= 0.35]{mid_game_time.jpg}
+    \includegraphics[scale= 0.35]{high_game_time.jpg}
   
-    \caption{Comparison made between RulePlayer and }
-  
-    % \label{AAA}
-  
-    % \center
-    % \includegraphics[scale=0.5]{high_game_eval}    
+    \caption{Comparison made between RulePlayer and PruningPlayer. \newline Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. \newline Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating the Case-based retrieval at work.} 
 \end{figure*}
 
+\begin{figure*}
+    \center
 
+    \includegraphics[scale = 0.9]{all_game_time.jpg}
+  
+    \caption{Comparison of evaluation time in all the three games.} 
+\end{figure*}
 \section{Conclusions and Future Work}
 This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the minimax algorithm and weight testing for the heuristic, and Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section, and Rowan spearheads the introduction, Zach the related work, and Josep the conclusions and future work.
 
