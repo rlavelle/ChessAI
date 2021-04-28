@@ -45,7 +45,10 @@ class PruningPlayer(AI):
                 moveNumber = max(tuple(outparam.keys())) + 1
                 outparam[moveNumber] = (best_move, 0)
 
-            return best_move,score
+            if outparam is None:
+                return best_move,score
+            else:
+                return best_move, score, outparam
         else:
             self.use_open = False
 
@@ -87,8 +90,10 @@ class PruningPlayer(AI):
         if terminal:
             if terminal.winner == self.player:
                 return None, self.player_win_score
-            if terminal != self.player:
+            elif terminal.winner is not None:
                 return None, self.player_lose_score
+            else:
+                return 0
         if depth == 0:
             return None, self.heuristic(board)
         
@@ -237,8 +242,10 @@ class BasePlayer(AI):
         if terminal:
             if terminal.winner == self.player:
                 return None, self.player_win_score
-            if terminal != self.player:
+            elif terminal.winner is not None:
                 return None, self.player_lose_score
+            else:
+                return 0
         if depth == 0:
             return None, self.heuristic(board)
         
