@@ -5,6 +5,7 @@
 \usepackage{courier}
 \usepackage[hyphens]{url} 
 \usepackage{graphicx}
+\graphicspath{./}
 \usepackage{todonotes}
 \usepackage[acronym]{glossaries}
 \urlstyle{rm}
@@ -26,7 +27,7 @@
 \begin{document}
 
 \maketitle
-
+\section{Abstract}
 \section{Introduction}
 \section{Related Work}
 \section{Model Overview}
@@ -58,7 +59,17 @@ While undeniably not perfect, this pruning strategy strikes a good balance betwe
 
 \section{Results and Discussion}
 \subsection{Experimental Design}
+We evaluated the performance of our algorithm by comparing the evaluation scores between our proposed Pruning Player with the algorithm without modifications, which we will call Base Player.
 
+The evaluation scores will be calculated by calling the Players to recommend the best move for every move played and get the heuristic scores of the state that they calculated using the Mini-max algorithm. The changes in these evaluation scores will be overlaid in a line graph to compare the scoring with the two Players.
+
+There are different levels of play in chess games; therefore, we made sure to also make comparisons between varying levels of complexity by picking three different chess games played by people in \url{https://lichess.org}. 
+
+We used the average rating score of the players who played these games in order to determine the level of play to evaluate. The low level was classified when the average Elo score was in the range between 1000 and 1500; mid level was in the range 1500 to 1900, and high level in scores above 1900. We settled with games that lasted for at least 15 moves and was not due to the player leaving during inconclusive games.
+
+Another one of the pruning algorithm’s main goals is to cut down on the exploration, so we also compared the cumulative time taken for each of the algorithms' evaluations.
+
+Lastly, we decided to set the depth factor to 4 for both algorithms in order to both have a reasonable evaluation metrics given the time it takes to score each move.
 \subsection{Surprising Results}
 \subsubsection{Rooting out ``Red Herrings"}
 Heuristics by definition cannot be perfect, and so it is possible that a reasonable move can have a similar heuristic value to an unreasonable one (especially in a weighted sum case like ours if the weights are not carefully tuned).  However, it is interesting to consider that pruning injects additional implicit information into the system, allowing for pruning of these erroneous moves with high heuristic values.  This effect is difficult to identify given our current testing structure, but future research could investigate this theory in greater detail.
@@ -68,6 +79,25 @@ A recurring theme of this project is finding the ``sweet spot" between efficienc
 
 \subsubsection{Evaluation Smoothing}
 One of the most interesting unexpected conclusions of this project occurred in evaluation.  Notably, an evaluator using pruning broadly had a ``smoother" evaluation graph than one using only the base model.  This highlights an important consequence of minimax in chess, especially one that is significantly influenced by piece balance.  Specifically, consider a capture that occurs at the deepest point searched by minimax before applying the heuristic; the model cannot differentiate between whether the capture is sound or leads to a losing exchange.  It can only go on the material difference, which to the model is no different than if a similar piece had been captured at the root of the search tree.  This can lead to inaccurate heuristic values propagated to the top of the tree, and it also makes evaluation more extreme; this issue is alleviated by including the fourth rule described in the model section where moves leading to losing exchanges are pruned.  This makes heuristic values propagated back much more indicative of the actual matieral balance at that point.
+
+\begin{figure*}
+    \center
+
+    \includegraphics[scale= 0.5]{low_game_eval.jpg}
+    \includegraphics[scale= 0.5]{low_game_time.jpg}
+    \includegraphics[scale= 0.5]{mid_game_score.jpg}
+    \includegraphics[scale= 0.5]{mid_game_time.jpg}
+    \includegraphics[scale= 0.5]{high_game_eval.jpg}
+    \includegraphics[scale= 0.5]{high_game_time.jpg}
+  
+    \caption{Comparison made between RulePlayer and }
+  
+    % \label{AAA}
+  
+    % \center
+    % \includegraphics[scale=0.5]{high_game_eval}    
+\end{figure*}
+
 
 \section{Conclusions and Future Work}
 This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the minimax algorithm and weight testing for the heuristic, and Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section, and Rowan spearheads the introduction, Zach the related work, and Josep the conclusions and future work.
