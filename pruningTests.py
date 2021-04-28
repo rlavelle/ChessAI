@@ -76,7 +76,7 @@ def play(player1, player2, k, weights, white = None, black = None):
                         print("Illegal Move")
         print(board)
         print()
-    synthesizeData(outparam, player1, player2, k, weights)
+        synthesizeData(outparam, player1, player2, k, weights)
     print("Game Over")
 
 if __name__ == "__main__": #Input = pruningTests.py playerW playerB material position threat iterations
