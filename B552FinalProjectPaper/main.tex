@@ -58,7 +58,7 @@ Notably, the last of the four rules acts as a check on the other three (e.g., lo
 While undeniably not perfect, this pruning strategy strikes a good balance between pruning aggressively but not excessively, especially in the context of the chosen heuristic.  Pruning performance against other approaches is evaluated in the following section, along with some surprising interplay with other aspects of this research.
 
 \section{Results and Discussion}
-\subsubsection{Experimental Design}
+\subsection{Experimental Design}
 We evaluated the performance of our algorithm by comparing the evaluation scores between our proposed Pruning Player with the algorithm without modifications, which we will call Base Player.
 
 The evaluation scores will be calculated by calling the Players to recommend the best move for every move played and get the heuristic scores of the state that they calculated using the Mini-max algorithm. The changes in these evaluation scores will be overlaid in a line graph to compare the scoring with the two Players.
@@ -70,6 +70,15 @@ We used the average rating score of the players who played these games in order 
 Another one of the pruning algorithm’s main goals is to cut down on the exploration, so we also compared the cumulative time taken for each of the algorithms' evaluations.
 
 Lastly, we decided to set the depth factor to 4 for both algorithms in order to both have a reasonable evaluation metrics given the time it takes to score each move.
+
+\subsection{Pruning Performance}
+We evaluated the pruning strategies against the base player through a series of head-to-head games while varying heuristic weights for each game.  The combinations considered are uniform (1.0, 1.0, 1.0), base (2.466, 0.974, 3.998; determined from the tournament of base players), and pruning (2.466, 0.300, 0.120; determined from the tournament of pruning players).  The pruning and base players also play against a human player (Zach) as a comparison.  All games are played once (i.e., since the minimax algorithm is deterministic, the is no randomness in move selection), and the approaches are evaluated based on their per-state runtime and overall performance; ideally, this captures the trade-off between extra computation time and state-visiting advantages for the pruning algorithm, as well as the relative strength of the algorithms against one another (i.e., which one wins, or which one has the advantage if the game lasts longer than 150 moves).  Per-state runtime is calculated from the total time taken by minimax divided by the number of states visited less the number of dynamic programming hits.  Results are summarized in figure \ref{pruningEval}.
+
+Notable conclusions from these data are that there are practically no significant differences between the pruning player and the base player.  The pruning player won more games outright, but the base player had the advantage in more unfinished games; the base player had faster average per-state computation time, but this cannot be deemed statistically significant from the pruning player.  It would be very interesting to consider where adding additional rules to the pruning algorithm would narrow or widen this gap.  Nonetheless, these results suggest that a pruning approach is a feasible way of injecting additional knowledge (and explanation power) into a player without significant additional cost.
+
+So why did the pruning player not have a better showing?  First, since the base player explores all possible moves to a certain depth, the only possible improvement to be gained is if the algorithm prunes states that the heuristic would label with erroneously strong values (more on this later); generally speaking, it should not outperform a base player of equal strength.  On the other side of the coin, a pruning algorithm's usefulness is in speeding up calculations; this effect was not observed in our experiments (neither was a slowdown), but it is possible that the cascading effect of pruning high up in the search tree might be more strongly felt when allowing minimax to search greater depths.
+
+As a last point, these experiments also highlighted the sensitivity of both players to the heuristic.  Human analysis of nearly all games finds blundered pieces for both algorithms which suggests that the both learned weights, while much better than uniform, and the heuristic itself can be further improved.  More complex heuristics would likely lead to stronger overall play and an even more interesting temporal comparison against the pruning algorithm.
 
 \begin{figure*}[tb]
     \begin{center}
@@ -115,8 +124,8 @@ Lastly, we decided to set the depth factor to 4 for both algorithms in order to 
             pruning & & ${1.15*10^{-3}\pm1.11*10^{-3}}$ (-)& - &-\\
             \hline
         \end{tabular}
-        \caption{Comparing per-state runtime across games, and also denoting performance.  All font styles denote the performance of the row player against the column player: bolface is a win, and italics is a loss.  For games unfinished after 150 moves (unformatted text) values include (+) for advantage, (-) for disadvantage, of (=) for equality. }
-        \label{activationFuncComparison}
+        \caption{Comparing per-state runtime across games, and also denoting performance.  All font styles denote the performance of the row player against the column player: bolface is a win, and italics is a loss.  For games unfinished after 150 moves (unformatted text) values include (+) for advantage, (-) for disadvantage, of (=) for equality.  Error values are one standard deviation.}
+        \label{pruningEval}
     \end{center}
 \end{figure*}
 
