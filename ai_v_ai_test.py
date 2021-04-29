@@ -2,6 +2,7 @@ from players import RandomPlayer, PruningPlayer, BasePlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
 import chess
+import time
 
 def round_robin(players):
     # setup matches
@@ -19,7 +20,10 @@ def round_robin(players):
     # play all matches out and collect winners
     for i,(white,black) in enumerate(matches):
         print(f'match {i}/{len(matches)}')
+        start = time.time()
         winner = play_game(white,black)
+        end = time.time()
+        print(f'game {i} took {(end-start)/60} min')
         wins[winner] += 1
 
     for winner in wins:
