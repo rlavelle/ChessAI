@@ -58,7 +58,7 @@ Notably, the last of the four rules acts as a check on the other three (e.g., lo
 While undeniably not perfect, this pruning strategy strikes a good balance between pruning aggressively but not excessively, especially in the context of the chosen heuristic.  Pruning performance against other approaches is evaluated in the following section, along with some surprising interplay with other aspects of this research.
 
 \section{Results and Discussion}
-\subsection{Experimental Design}
+\subsubsection{Experimental Design}
 We evaluated the performance of our algorithm by comparing the evaluation scores between our proposed Pruning Player with the algorithm without modifications, which we will call Base Player.
 
 The evaluation scores will be calculated by calling the Players to recommend the best move for every move played and get the heuristic scores of the state that they calculated using the Mini-max algorithm. The changes in these evaluation scores will be overlaid in a line graph to compare the scoring with the two Players.
@@ -131,7 +131,7 @@ A recurring theme of this project is finding the ``sweet spot" between efficienc
 One of the most interesting unexpected conclusions of this project occurred in evaluation.  Notably, an evaluator using pruning broadly had a ``smoother" evaluation graph than one using only the base model.  This highlights an important consequence of minimax in chess, especially one that is significantly influenced by piece balance.  Specifically, consider a capture that occurs at the deepest point searched by minimax before applying the heuristic; the model cannot differentiate between whether the capture is sound or leads to a losing exchange.  It can only go on the material difference, which to the model is no different than if a similar piece had been captured at the root of the search tree.  This can lead to inaccurate heuristic values propagated to the top of the tree, and it also makes evaluation more extreme; this issue is alleviated by including the fourth rule described in the model section where moves leading to losing exchanges are pruned.  This makes heuristic values propagated back much more indicative of the actual matieral balance at that point.
 
 \begin{figure*}
-    \center
+    \centering
 
     \includegraphics[scale= 0.38]{low_game_eval.jpg}
     \includegraphics[scale= 0.38]{mid_game_eval.jpg}
