@@ -30,6 +30,18 @@
 \section{Abstract}
 \section{Introduction}
 \section{Related Work}
+In general, minimax and alpha-beta search are well-documented, intimately-understood topics in AI research.  At the same time, chess is a very well-studied domain for AI models, despite the apparent domination of state-of-the-art research by \textit{Deep Blue} \cite{campbell-et-al2002}, \textit{Stockfish} \cite{silver-et-al17}, \cite{grunke2020}, and \textit{AlphaZero} \cite{silver-et-al17}, \cite{grunke2020}.  Our work necessarily cannot compare directly with these models, but it is very interesting to compare and contrast approaches, as well as relative to other concepts that are not directly applied to chess.
+
+\subsection{State-of-the-Art in Chess}
+The famed \textit{Deep Blue} \cite{campbell-et-al2002} was the first chess AI to defeat a world chess champion, and it is the most similar to our work.  That said, it employed overlapping search algorithms and large databases of opening and endgame information to optimize performance (not to mention exhaustive algorithmic optimizations to minimize runtime).  In a similar vein \textit{Stockfish} (an open-source program referenced by Silver et al. and Grünke), uses powerful search algorithms with carefully hand-crafted features to evaluate positions.  Notable among these algorithms is a so-called ``quiescence search" that modifies algorithm behavior if there is an active check or threat on the board versus a comparatively ``quiet" position; this bears some similarity to our pruning model.
+
+In contrast to these models, \textit{AlphaZero} employs a deep neural network that is self-trained using Monte-Carlo methods to evaluate positions probabilistically \cite{silver-et-al17}.  This stands in stark contrast to the more search-oriented, rule-based algorithms discussed previously, and it offers an exciting approach that we do not consider in our research.  It is especially interesting to consider this method in the context of AI explainability, where approaches like \textit{Deep Blue} and \textit{Stockfish} are fairly readily explained, whereas the stronger \textit{AlphaZero} contains a more complex set of internal rules.  Also of interest in this vein is the less well-known \textit{DeepChess} model \cite{david-et-al2016}, which also employs neural networks to learn positional differences from the ground up.   Specifically this algorithm works in two parts, where the first part distills a provided position into a feature vector and then a second interprets the feature vector according to their training method to evaluate positions relative to one another.
+
+\subsection{Other Interesting Works}
+Considering a final work in the realm of chess position evaluation, Kerner \cite{Kerner94} uses \acrshort{cbr} to evaluate chess positions directly, similar to the first attempt explored in the model overview section following.  Specifically, this algorithm considers key positional features (e.g., doubled pawns, material differences, etc.) as cases and then adapts them collectively to output an evaluation score for the position.  This work in particular provided inspiration for both the pruning and evaluation strategies in this research.
+
+In terms of works not related to chess, Bradtke and Lehnert \cite{bradtke-lehnert88} propose a model using \acrshort{cbr} and search in tandem to solve puzzles.  In their approach, \acrshort{cbr} is used to place bounds on reasonable options for a search algorithm; this is different from our pruning approach but has a similar spirit.  Lastly, Anthony et al. \cite{anthony-et-al2017} explore another reinforcement learning strategy in the spirit of \textit{AlphaZero}, where their work focuses on the differentiation between planning and later generalization.  Their player outperforms state-of-the-art and professional players in the game Hex; while this work is fairly far removed from our research, it is notable in its relationship to \textit{AlphaZero}, especially for consideration of positional ideas.
+
 \section{Model Overview}
 
 \subsection{Pruning the Search Space}
@@ -124,7 +136,7 @@ As a last point, these experiments also highlighted the sensitivity of both play
             pruning & & ${1.15*10^{-3}\pm1.11*10^{-3}}$ (-)& - &-\\
             \hline
         \end{tabular}
-        \caption{Comparing per-state runtime across games, and also denoting performance.  All font styles denote the performance of the row player against the column player: bolface is a win, and italics is a loss.  For games unfinished after 150 moves (unformatted text) values include (+) for advantage, (-) for disadvantage, of (=) for equality.  Error values are one standard deviation.}
+        \caption{Comparing per-state runtime across games, and also denoting performance.  All font styles denote the performance of the row player against the column player: bolface is a win, and italics is a loss.  For games unfinished after 150 moves (unformatted text), values include (+) for advantage, (-) for disadvantage, or (=) for equality.  Error values are one standard deviation.}
         \label{pruningEval}
     \end{center}
 \end{figure*}
@@ -162,5 +174,8 @@ One of the most interesting unexpected conclusions of this project occurred in e
 \end{figure*}
 \section{Conclusions and Future Work}
 This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the minimax algorithm and weight testing for the heuristic, and Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section, and Rowan spearheads the introduction, Zach the related work, and Josep the conclusions and future work.
+
+\bibliographystyle{aaai}
+\bibliography{references}
 
 \end{document}
