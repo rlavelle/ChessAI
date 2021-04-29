@@ -11,8 +11,6 @@ def round_robin(players):
     for white in players:
         for black in players:
             if white == black: continue
-            white.player = chess.WHITE
-            black.player = chess.BLACK
             matches.append((white,black))
     
     wins = {p: 0 for p in players}
@@ -21,6 +19,8 @@ def round_robin(players):
     for i,(white,black) in enumerate(matches):
         print(f'match {i}/{len(matches)}')
         start = time.time()
+        white = PruningPlayer(player=chess.WHITE, depth=4, verbose=False, weights=white.weights)
+        black = PruningPlayer(player=chess.BLACK, depth=4, verbose=False, weights=black.weights)
         winner = play_game(white,black)
         end = time.time()
         print(f'game {i} took {(end-start)/60} min')
@@ -59,7 +59,7 @@ def play_game(white:AI, black:AI, verbose = False):
     return black
 
 def gen_players(w):
-    return PruningPlayer(player=None, depth=5, verbose=False, weights=w)
+    return PruningPlayer(player=None, depth=4, verbose=False, weights=w)
 
 if __name__ == "__main__":
     w1 = {'material': 9.752087678141946, 'positioning': 0.11126381956756781, 'threat': 3.5301550563650457}
