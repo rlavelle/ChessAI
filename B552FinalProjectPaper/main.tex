@@ -180,14 +180,6 @@ Notably, the last of the four rules acts as a check on the other three (e.g., lo
 
 While undeniably not perfect, this pruning strategy strikes a good balance between pruning aggressively but not excessively, especially in the context of the chosen heuristic.  Pruning performance against other approaches is evaluated in the following section, along with some surprising interplay with other aspects of this research.
 
-\begin{figure}
-    \center
-
-    \includegraphics[width=0.48\textwidth]{all_game_time.jpg}
-  
-    \caption{Comparison of evaluation time in all the three games.} 
-\end{figure}
-
 \section{Results and Discussion}
 
 \begin{figure*}[tb]
@@ -266,8 +258,19 @@ Lastly, we decided to set the depth factor to 4 for both algorithms in order to 
     \includegraphics[scale= 0.38]{mid_game_time.jpg}
     \includegraphics[scale= 0.38]{high_game_time.jpg}
   
-    \caption{Comparison made between RulePlayer and PruningPlayer. \newline Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. \newline Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating the Case-based retrieval at work.} 
+    \caption{Comparison made between RulePlayer and PruningPlayer. Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating the Case-based retrieval at work.} 
 \end{figure*}
+
+\begin{figure}
+    \center
+
+    % \includegraphics[width=0.48\textwidth]{all_game_time.jpg}
+    \includegraphics[scale = 0.4]{all_game_time.jpg}
+    
+  
+    \caption{Comparison of evaluation time in all the three games.} 
+\end{figure}
+
 
 
 \subsection{Heuristic Learning Performance}
