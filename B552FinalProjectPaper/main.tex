@@ -183,6 +183,59 @@ Notably, the last of the four rules acts as a check on the other three (e.g., lo
 While undeniably not perfect, this pruning strategy strikes a good balance between pruning aggressively but not excessively, especially in the context of the chosen heuristic.  Pruning performance against other approaches is evaluated in the following section, along with some surprising interplay with other aspects of this research.
 
 \section{Results and Discussion}
+
+\begin{figure*}[tb]
+    \begin{center}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|c|c|c|c|c|} 
+            \hline
+            \multicolumn{5}{|c|}{Player 1 Per-State Runtimes}\\
+            \hline
+            && \multicolumn{3}{|c|}{Player 2}\\
+            \hline
+            Weighting & Player 1 & Base & Pruning & Human \\ [0.5ex]
+            \hline\hline
+            uniform & Base & - & $\mathbf{7.93*10^{-4}\pm1.46*10^{-3}}$ & $\mathit{9.90*10^{-4}\pm1.64*10^{-3}}$\\
+            \hline
+            base & & - & ${1.34*10^{-3}\pm2.06*10^{-3}}$ (=) & - \\
+            \hline
+            pruning & & - & ${1.22*10^{-3}\pm2.21*10^{-3}}$ (+)& - \\
+            \hline
+            uniform & Pruning & $\mathbf{1.42*10^{-3}\pm2.66*10^{-3}}$ & - & $\mathit{1.45*10^{-3}\pm2.22*10^{-3}}$ \\
+            \hline
+            base & & ${1.19*10^{-3}\pm1.77*10^{-3}}$ (-) & - & - \\
+            \hline
+            pruning & & $\mathbf{1.70*10^{-3}\pm2.40*10^{-3}}$ & - & - \\
+            \hline\hline
+        \end{tabular}
+        }
+        \resizebox{\textwidth}{!}{
+        \begin{tabular}{|c|c|c|c|c|} 
+            \hline
+            \multicolumn{5}{|c|}{Player 2 Per-State Runtimes}\\
+            \hline
+            && \multicolumn{3}{|c|}{Player 1}\\
+            \hline
+            Weights & Player 2 & Base & Pruning & Human \\ [0.5ex]
+            \hline\hline
+            uniform & Base & - & $\mathit{6.89*10^{-4}\pm1.04*10^{-3}}$ &$\mathit{1.00*10^{-3}\pm1.68*10^{-3}}$\\
+            \hline
+            base & & - & ${8.53*10^{-4}\pm1.46*10^{-3}}$ (+) &-\\
+            \hline
+            pruning & & - & $\mathit{7.03*10^{-4}\pm1.13*10^{-3}}$ &-\\
+            \hline
+            uniform & Pruning & $\mathit{1.30*10^{-3}\pm1.73*10^{-3}}$ & - & $\mathit{1.63*10^{-3}\pm2.25*10^{-3}}$\\
+            \hline
+            base & & ${1.64*10^{-3}\pm1.97*10^{-3}}$ (=) & - &-\\
+            \hline
+            pruning & & ${1.15*10^{-3}\pm1.11*10^{-3}}$ (-)& - &-\\
+            \hline
+        \end{tabular}
+        }
+        \caption{Comparing per-state runtime across games, and also denoting performance.  All font styles denote the performance of the row player against the column player: bolface is a win, and italics is a loss.  For games unfinished after 150 moves (unformatted text), values include (+) for advantage, (-) for disadvantage, or (=) for equality.  Error values are one standard deviation.}
+        \label{pruningEval}
+    \end{center}
+\end{figure*}
 \subsection{Experimental Design}
 We evaluated the performance of our algorithm by comparing the evaluation scores between our proposed Pruning Player with the algorithm without modifications, which we will call Base Player.
 
@@ -196,6 +249,21 @@ Another one of the pruning algorithm’s main goals is to cut down on the explor
 
 Lastly, we decided to set the depth factor to 4 for both algorithms in order to both have a reasonable evaluation metrics given the time it takes to score each move.
 
+\begin{figure*}
+    \centering
+
+    \includegraphics[scale= 0.38]{low_game_eval.jpg}
+    \includegraphics[scale= 0.38]{mid_game_eval.jpg}
+    \includegraphics[scale= 0.38]{high_game_eval.jpg}
+
+    \includegraphics[scale= 0.38]{low_game_time.jpg}
+    \includegraphics[scale= 0.38]{mid_game_time.jpg}
+    \includegraphics[scale= 0.38]{high_game_time.jpg}
+  
+    \caption{Comparison made between RulePlayer and PruningPlayer. \newline Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. \newline Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating the Case-based retrieval at work.} 
+\end{figure*}
+
+
 \subsection{Heuristic Learning Performance}
 We ran the tournament described in the methods section under three different conditions, first we used the base AI which preforms no pruning as the agent AI, for this tournament we selected any winner from the round robin as a candidate for reproduction, this was done in the hope of eliminating any very poor preforming AIs who did not win any games. Next we ran the tournament with the same setup, but using the pruning AI as our agent AI. Finally we ran a tournament using the described top three winner setup with the pruning AI as the agent AI. All three sets of weights were then put into a large round robin where we also included our knowledge chosen weights as an agent. This tournament ran for 64 games and the best heuristic weights are displayed in Table 3. 
 
@@ -205,7 +273,7 @@ It should be noted that these tournaments took a very long time to run, on avera
     \centering
     \begin{tabular}{|c|c|c|c|} \hline
         heuristic &  material value & positioning & threats\\\hline
-        weights & placeholder & placeholder & placeholder\\\hline
+        weights & 9.752 &  0.111 & 3.530\\\hline
     \end{tabular}
     \caption{Learned Heuristic Weights}
     \label{tab:my_label}
@@ -236,54 +304,14 @@ So why did the pruning player not have a better showing?  First, since the base 
 
 As a last point, these experiments also highlighted the sensitivity of both players to the heuristic.  Human analysis of nearly all games finds blundered pieces for both algorithms which suggests that the both learned weights, while much better than uniform, and the heuristic itself can be further improved.  More complex heuristics would likely lead to stronger overall play and an even more interesting temporal comparison against the pruning algorithm.
 
-\begin{figure*}[tb]
-    \begin{center}
-        \begin{tabular}{|c|c|c|c|c|} 
-            \hline
-            \multicolumn{5}{|c|}{Player 1 Per-State Runtimes}\\
-            \hline
-            && \multicolumn{3}{|c|}{Player 2}\\
-            \hline
-            Weighting & Player 1 & Base & Pruning & Human \\ [0.5ex]
-            \hline\hline
-            uniform & Base & - & $\mathbf{7.93*10^{-4}\pm1.46*10^{-3}}$ & $\mathit{9.90*10^{-4}\pm1.64*10^{-3}}$\\
-            \hline
-            base & & - & ${1.34*10^{-3}\pm2.06*10^{-3}}$ (=) & - \\
-            \hline
-            pruning & & - & ${1.22*10^{-3}\pm2.21*10^{-3}}$ (+)& - \\
-            \hline
-            uniform & Pruning & $\mathbf{1.42*10^{-3}\pm2.66*10^{-3}}$ & - & $\mathit{1.45*10^{-3}\pm2.22*10^{-3}}$ \\
-            \hline
-            base & & ${1.19*10^{-3}\pm1.77*10^{-3}}$ (-) & - & - \\
-            \hline
-            pruning & & $\mathbf{1.70*10^{-3}\pm2.40*10^{-3}}$ & - & - \\
-            \hline\hline
-        \end{tabular}
-        \begin{tabular}{|c|c|c|c|c|} 
-            \hline
-            \multicolumn{5}{|c|}{Player 2 Per-State Runtimes}\\
-            \hline
-            && \multicolumn{3}{|c|}{Player 1}\\
-            \hline
-            Weights & Player 2 & Base & Pruning & Human \\ [0.5ex]
-            \hline\hline
-            uniform & Base & - & $\mathit{6.89*10^{-4}\pm1.04*10^{-3}}$ &$\mathit{1.00*10^{-3}\pm1.68*10^{-3}}$\\
-            \hline
-            base & & - & ${8.53*10^{-4}\pm1.46*10^{-3}}$ (+) &-\\
-            \hline
-            pruning & & - & $\mathit{7.03*10^{-4}\pm1.13*10^{-3}}$ &-\\
-            \hline
-            uniform & Pruning & $\mathit{1.30*10^{-3}\pm1.73*10^{-3}}$ & - & $\mathit{1.63*10^{-3}\pm2.25*10^{-3}}$\\
-            \hline
-            base & & ${1.64*10^{-3}\pm1.97*10^{-3}}$ (=) & - &-\\
-            \hline
-            pruning & & ${1.15*10^{-3}\pm1.11*10^{-3}}$ (-)& - &-\\
-            \hline
-        \end{tabular}
-        \caption{Comparing per-state runtime across games, and also denoting performance.  All font styles denote the performance of the row player against the column player: bolface is a win, and italics is a loss.  For games unfinished after 150 moves (unformatted text), values include (+) for advantage, (-) for disadvantage, or (=) for equality.  Error values are one standard deviation.}
-        \label{pruningEval}
-    \end{center}
-\end{figure*}
+\begin{figure}
+    \center
+
+    \includegraphics[width=0.48\textwidth]{all_game_time.jpg}
+  
+    \caption{Comparison of evaluation time in all the three games.} 
+\end{figure}
+
 
 \subsection{Surprising Results}
 \subsubsection{Rooting out ``Red Herrings"}
@@ -295,27 +323,6 @@ A recurring theme of this project is finding the ``sweet spot" between efficienc
 \subsubsection{Evaluation Smoothing}
 One of the most interesting unexpected conclusions of this project occurred in evaluation.  Notably, an evaluator using pruning broadly had a ``smoother" evaluation graph than one using only the base model.  This highlights an important consequence of minimax in chess, especially one that is significantly influenced by piece balance.  Specifically, consider a capture that occurs at the deepest point searched by minimax before applying the heuristic; the model cannot differentiate between whether the capture is sound or leads to a losing exchange.  It can only go on the material difference, which to the model is no different than if a similar piece had been captured at the root of the search tree.  This can lead to inaccurate heuristic values propagated to the top of the tree, and it also makes evaluation more extreme; this issue is alleviated by including the fourth rule described in the model section where moves leading to losing exchanges are pruned.  This makes heuristic values propagated back much more indicative of the actual matieral balance at that point.
 
-\begin{figure*}
-    \centering
-
-    \includegraphics[scale= 0.38]{low_game_eval.jpg}
-    \includegraphics[scale= 0.38]{mid_game_eval.jpg}
-    \includegraphics[scale= 0.38]{high_game_eval.jpg}
-
-    \includegraphics[scale= 0.38]{low_game_time.jpg}
-    \includegraphics[scale= 0.38]{mid_game_time.jpg}
-    \includegraphics[scale= 0.38]{high_game_time.jpg}
-  
-    \caption{Comparison made between RulePlayer and PruningPlayer. \newline Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. \newline Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating the Case-based retrieval at work.} 
-\end{figure*}
-
-\begin{figure*}
-    \center
-
-    \includegraphics[scale = 0.9]{all_game_time.jpg}
-  
-    \caption{Comparison of evaluation time in all the three games.} 
-\end{figure*}
 \section{Conclusions and Future Work}
 This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the alpha-beta minimax algorithm, heuristic development and learning, and a case based retrieval system for opening play. Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section, and Rowan spearheads the introduction, Zach the related work, and Josep the conclusions and future work.
 
