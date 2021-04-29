@@ -14,8 +14,8 @@ def round_robin(players):
             black.player = chess.BLACK
             matches.append((white,black))
     
-    wins = {p: 0 for p in players}
-
+    wins = {hash(p): 0 for p in players}
+    
     # play all matches out and collect winners
     for i,(white,black) in enumerate(matches):
         print(f'match {i}/{len(matches)}')
@@ -65,4 +65,5 @@ if __name__ == "__main__":
     base_w = {'material': 1, 'positioning': 0.02, 'threat': 0.05}
     weights = [w1,w2,w3,w4,w5,w6,w7,base_w]
     players = [gen_players(w) for w in weights]
-    round_robin(players=players)
+    #round_robin(players=players)
+    print(players)
