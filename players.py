@@ -20,7 +20,7 @@ class RandomPlayer:
 
 class PruningPlayer(AI):
 
-    def __init__(self, player:bool, verbose=True, depth = 5, weights = {'material': 1, 'positioning': 0.02, 'threat': 0.05}):
+    def __init__(self, player:bool, verbose=True, depth = 5, weights = {'material': 2.466, 'positioning': 0.974, 'threat': 3.998}):
         super().__init__(player, verbose, weights)
         self.open_ai = OpenAI()
         self.use_open = True
