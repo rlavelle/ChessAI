@@ -9,7 +9,7 @@ import sys
 def analyze(filenames):
     writer = open("./Zach_data/analysis.csv", "w")
     for filename in filenames:
-        if filename == "analysis.csv" or filename == ".DS_Store":
+        if filename == "analysis.csv" or filename == ".DS_Store" or "False" in filename:
             continue
         writer.write(filename + "\n")
         reader = open("./Zach_data/" + filename, "r")
