@@ -277,16 +277,16 @@ It should be noted that these tournaments took a very long time to run, on avera
 
 \begin{table}[t]
     \centering
+    \resizebox{0.48\textwidth}{!}{
     \begin{tabular}{|c|c|c|c|} \hline
         heuristic &  material value & positioning & threats\\\hline
         weights & 9.752 &  0.111 & 3.530\\\hline
     \end{tabular}
+    }
     \caption{Learned Heuristic Weights}
     \label{tab:my_label}
 \end{table}
 
-\subsection{Opening AI Performance}
-Results for average number of moves played by the opening AI before switching over to the pruning AI can be seen in Table 4, this includes averages for both before and after the adaptation of sorting the cases by sequence length. Its interesting to note here that the games for Pruning versus Pruning, and Pruning versus Base alpha-beta minimax are not averages, the same game is played every time if the weights do not change, this is due to the fact that there is no randomness within the algorithm. It is also interesting to note that when two pruning players play (agents who both have an opening AI component) they play out the full Sicilian Defense exchange setting up the board very well for the rest of them game. 
 \begin{table}[]
 \centering
 \begin{tabular}{|l|l|l|}
@@ -300,6 +300,10 @@ Pruning v. Base & 12.0 & 8.0 \\ \hline
 \caption{Average Number of Moves Made by OpenAI}
 \label{tab:my-table}
 \end{table}
+
+\subsection{Opening AI Performance}
+Results for average number of moves played by the opening AI before switching over to the pruning AI can be seen in Table 4, this includes averages for both before and after the adaptation of sorting the cases by sequence length. Its interesting to note here that the games for Pruning versus Pruning, and Pruning versus Base alpha-beta minimax are not averages, the same game is played every time if the weights do not change, this is due to the fact that there is no randomness within the algorithm. It is also interesting to note that when two pruning players play (agents who both have an opening AI component) they play out the full Sicilian Defense exchange setting up the board very well for the rest of them game. 
+
 
 \subsection{Pruning Performance}
 We evaluated the pruning strategies against the base player through a series of head-to-head games while varying heuristic weights for each game.  The combinations considered are uniform (1.0, 1.0, 1.0), base (2.466, 0.974, 3.998; determined from the tournament of base players), and pruning (2.466, 0.300, 0.120; determined from the tournament of pruning players).  The pruning and base players also play against a human player (Zach) as a comparison.  All games are played once (i.e., since the minimax algorithm is deterministic, the is no randomness in move selection), and the approaches are evaluated based on their per-state runtime and overall performance; ideally, this captures the trade-off between extra computation time and state-visiting advantages for the pruning algorithm, as well as the relative strength of the algorithms against one another (i.e., which one wins, or which one has the advantage if the game lasts longer than 150 moves).  Per-state runtime is calculated from the total time taken by minimax divided by the number of states visited less the number of dynamic programming hits.  Results are summarized in figure \ref{pruningEval}.
@@ -322,7 +326,7 @@ A recurring theme of this project is finding the ``sweet spot" between efficienc
 One of the most interesting unexpected conclusions of this project occurred in evaluation.  Notably, an evaluator using pruning broadly had a ``smoother" evaluation graph than one using only the base model.  This highlights an important consequence of minimax in chess, especially one that is significantly influenced by piece balance.  Specifically, consider a capture that occurs at the deepest point searched by minimax before applying the heuristic; the model cannot differentiate between whether the capture is sound or leads to a losing exchange.  It can only go on the material difference, which to the model is no different than if a similar piece had been captured at the root of the search tree.  This can lead to inaccurate heuristic values propagated to the top of the tree, and it also makes evaluation more extreme; this issue is alleviated by including the fourth rule described in the model section where moves leading to losing exchanges are pruned.  This makes heuristic values propagated back much more indicative of the actual matieral balance at that point.
 
 \section{Conclusions and Future Work}
-This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the alpha-beta minimax algorithm, heuristic development and learning, and a case based retrieval system for opening play. Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section, and Rowan spearheads the introduction, Zach the related work, and Josep the conclusions and future work.
+This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the alpha-beta minimax algorithm, heuristic development and learning, and a case based retrieval system for opening play. Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section.
 
 \bibliographystyle{aaai}
 \bibliography{references}
