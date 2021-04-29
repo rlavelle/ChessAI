@@ -11,16 +11,22 @@ def round_robin(players):
     for white in players:
         for black in players:
             if white == black: continue
+            white.player = chess.WHITE
+            black.player = chess.BLACK
             matches.append((white,black))
     
     wins = {p: 0 for p in players}
     
     # play all matches out and collect winners
     for i,(white,black) in enumerate(matches):
+        # reset use_open to true, and reset the open AI
+        white.use_open = True
+        white.open_ai = OpenAI()
+        black.use_open = True
+        black.open_ai = OpenAI()
+
         print(f'match {i}/{len(matches)}')
         start = time.time()
-        white = PruningPlayer(player=chess.WHITE, depth=4, verbose=False, weights=white.weights)
-        black = PruningPlayer(player=chess.BLACK, depth=4, verbose=False, weights=black.weights)
         winner = play_game(white,black)
         end = time.time()
         print(f'game {i} took {(end-start)/60} min')
