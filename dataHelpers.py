@@ -85,3 +85,12 @@ if __name__ == "__main__":
 # Pruning - Base 2.466 0.974 3.998
 #   r1b1kbr1/pp1ppppp/5q2/3p4/3N3P/1BP5/PP1Q1PP1/R1B1K2R b KQq - 3 18
 #   79
+# Pruning - Base 0.9752 0.111 3.530
+#   1rbqkb1r/2pppppp/p1n2n2/3P4/4P3/2P2N1P/q2N1PP1/2BQR1K1 b k - 0 11
+#   51
+# Base - Pruning 1 0.02 0.05
+#   2kr1bnr/p3pp1p/1n4p1/QNpp4/8/4PN2/PPPP1PPP/R1B1K2R w KQ - 1 10
+#   47
+# Pruning - Base 1 0.02 0.05
+#   r1bqkb1r/pppppppp/8/2nP4/7P/2P1BP2/PP3P2/RN1Q2K1 b kq - 2 13
+#   59
