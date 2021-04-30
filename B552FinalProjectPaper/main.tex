@@ -331,6 +331,8 @@ One of the most interesting unexpected conclusions of this project occurred in e
 \section{Conclusions and Future Work}
 This research presents project work performed to investigate \acrshort{cbr}-based opening strategy, heuristic tuning, rule-based pruning, and positional evaluation in chess.  In this project, Josep Han focused on evaluation, along with detailwork and tuning of the minimax algorithm, Rowan Lavelle focused on the alpha-beta minimax algorithm, heuristic development and learning, and a case based retrieval system for opening play. Zach Wilkerson focused on pruning and object-oriented work for the minimax algorithm.  Each author presents the model and results information corresponding to their specialty section.
 
+Although our algorithm showed promising results, we were unable to explore the full potential due to the limitation of the engine. The pruning and search algorithms are written in Python, meaning that multicore processing is not natively supported. Therefore, running evaluations and simulations took a much longer time than running the Stockfish engine, which supports multicore processing and written in C++. Consequently, increasing the evaluation depth from 4 to 5 resulted in a prohibitive amount of computation time at each turn. Adapting our code into faster engines similar to Stockfish will allow us to evaluate and simulate games at greater detail. 
+
 \bibliographystyle{aaai}
 \bibliography{references}
 
