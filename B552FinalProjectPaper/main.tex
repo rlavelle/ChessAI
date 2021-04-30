@@ -29,12 +29,13 @@
 
 \maketitle
 \section{Abstract}
+Chess has long been a sandbox for AI researchers investigating search algorithms and strategies, since it has a very complex search space that is somewhat navigable by humans.  Thus, a significant challenge has been including this human-inspired knowledge into the system.  We propose a model that incorporates both opening knowledge and in-game rules of thumb into an existing minimax framework.  Results suggest that the proposed system neither improves nor hinders overall runtime during play, but it shows promise for whole-game evaluation.
 
 \begin{figure*}
     \centering
     \includegraphics[width=0.65\textwidth]{minimax.jpg}
     \caption{Minimax Search Tree}
-    \label{fig:my_label}
+    \label{minimax}
 \end{figure*}
 
 \section{Introduction}
@@ -44,7 +45,7 @@ Chess is very challenging for a computer to play due to its large branching fact
 
 A necessary prerequisite to our research is understanding the minimax Algorithm. This is a traditional and classic game playing AI method for two player, ``zero-sum" games (i.e., one wins, and the other loses). We as humans plan our move based on what we think will be a good move, but we also consider how the opponent might respond, then we think about how we might respond to that and so on. The interesting facet here is that we are not imagining every possible move, we look at the board, see a few good moves, then employ that mental method for those moves. This is inherently very hard for computers but very simple for humans.  Minimax works the same way, however it explores \textit{everything}. It takes in a state, and then performs all possible moves, then does the same thing for each created state, up until a certain depth limit or when a terminal state is reached (win,loss,draw). When the depth limit is reached a heuristic function is called to estimate how good or bad a board is for the AI.
 
-The algorithm then propagates the values of the heuristic back up the tree in a depth first search manner; max nodes pick the maximum value of their children, and min nodes pick the minimum values of their children. This results with a single relative best value and move being passed up the tree to the root node. An example minimax tree can be seen in Figure 1. For this tree the optimal move would be B1, since the value 5 would be propagated to the min node, and the other nodes return smaller scores.
+The algorithm then propagates the values of the heuristic back up the tree in a depth first search manner; max nodes pick the maximum value of their children, and min nodes pick the minimum values of their children. This results with a single relative best value and move being passed up the tree to the root node. An example minimax tree can be seen in Figure \ref{minimax}. For this tree the optimal move would be B1, since the value 5 would be propagated to the min node, and the other nodes return smaller scores.
 
 However, this is a lot of states to visit and compute heuristic values for if the game has a large branching factor like chess. There is a classic optimization to this problem however, the alpha-beta pruning method. The method has three simple rules: if we are at a max node, we can update alpha but only increase it; if we are at a min node, we can update beta but only decrease it; and finally if at any node $\alpha \geq \beta$ then we prune, meaning we no longer consider children from that node. The intuition behind this method is that if an alpha value is propagated up to a max node, and a min node below it propagates up a beta value that is smaller, then its nonsensical to continue searching the children of that min node, since no move from that branch will ever be accepted by the above parent max node--it has already found a better move. 
 
