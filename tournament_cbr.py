@@ -1,4 +1,4 @@
-from players import RandomPlayer, CBRPlayer, BasePlayer
+from players import RandomPlayer, PruningPlayer, BasePlayer
 from alpha_beta_ai import AI
 from opening import OpenAI
 import sys
@@ -90,7 +90,7 @@ def breed_child(parent_a, parent_b):
                'positioning': position_weight,
                'threat': threat_weight}
     
-    return CBRPlayer(player=None, depth=5, verbose=False, weights=weights)
+    return PruningPlayer(player=None, depth=5, verbose=False, weights=weights)
 
 # generate player of given color
 def gen_players():
@@ -107,7 +107,7 @@ def gen_players():
                'positioning': position_weight,
                'threat': threat_weight}
 
-    return CBRPlayer(player=None, depth=5, verbose=False, weights=weights)
+    return PruningPlayer(player=None, depth=5, verbose=False, weights=weights)
 
 
 def play_game(white:AI, black:AI, verbose = False):
