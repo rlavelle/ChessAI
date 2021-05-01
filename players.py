@@ -9,6 +9,13 @@ import time
 import math
 from opening import OpenAI
 
+#========
+#NOTE: each class listed here is a separate player type.  Each contains a makeMove function that either:
+#   1) moves randomly (RandomPlayer),
+#   2) performs alpha-beta minimax with pruning (PruningPlayer), or
+#   3) performs alpha-beta minimax without pruning (BasePlayer)
+# In practical use for this project, the PruningPlayer and BasePlayer initializers take in a maxDepth and weights
+#   arguments for customization.
 
 class RandomPlayer:
 
@@ -17,6 +24,8 @@ class RandomPlayer:
 
     def makeMove(self, board):
         board.push(random.sample(list(board.legal_moves), 1)[0])
+
+
 
 class PruningPlayer(AI):
 
@@ -167,6 +176,9 @@ class PruningPlayer(AI):
                     self.pruned += 1
         
         return best_move, best_score
+
+
+
 
 # running pure alphabeta; no openAI or threat pruning 
 class BasePlayer(AI):

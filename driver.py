@@ -60,6 +60,7 @@ def play(white = None, black = None):
         print()
     print("Game Over")
 
+# Main running structure
 if __name__ == "__main__":
     if(len(sys.argv) < 2) or (len(sys.argv) > 4):
         raise(Exception("Error: incorrect number of arguments: " + str(len(sys.argv))))

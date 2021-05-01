@@ -6,6 +6,8 @@ import statistics
 import os
 import sys
 
+#Analyze csv files and output data
+#   filenames = list of files to be processed
 def analyze(filenames):
     writer = open("./Zach_data/analysis.csv", "w")
     for filename in filenames:
@@ -39,6 +41,10 @@ def analyze(filenames):
         reader.close()
     writer.close()
 
+# Constructs a board based on input values for human analysis
+#   filename = csv file containing move order to follow
+#   startmove = optional offset within filename from which to start
+#   initialBoard = optional start state aside from move 1 (i.e., a game in progress)
 def constructBoard(filename, startmove = 7, initialBoard = None):
     if initialBoard is not None:
         board = chess.Board(initialBoard)
@@ -55,6 +61,7 @@ def constructBoard(filename, startmove = 7, initialBoard = None):
         i += 4
     print(board)
 
+#Main structure
 if __name__ == "__main__":
     if sys.argv[1] == "analyze":
         files = os.listdir("./Zach_data/")
@@ -66,7 +73,7 @@ if __name__ == "__main__":
             constructBoard("./Zach_data/" + sys.argv[2])
 
 
-#Games
+#Game information for personal reference in constructing boards
 # Base - Pruning 1 1 1
 #   r1b1kbnr/pp1qpppp/2B5/3p4/2p5/2N1PN2/PPPP1PPP/R1BQK2R w KQkq - 1 6
 #   31

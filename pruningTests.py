@@ -8,6 +8,12 @@ from pruning import evaluateExchange
 import sys
 import chess
 
+# Function to write results to csv files
+#   data = a dictionary containing the data to be written
+#   player1 = white player label (string)
+#   player2 = black player label (string)
+#   k = iteration label (if running multiple tests)
+#   weights = dictionary containing the heuristic weights
 def synthesizeData(data, player1, player2, k, weights):
     record = open("./Zach_data/" + player1 + "_" + player2 + "_" + str(k) + "_" + str(weights["material"]) + str(weights["positioning"]) + str(weights["threat"]) + ".csv", "w")
     for key in weights.keys():
@@ -79,6 +85,7 @@ def play(player1, player2, k, weights, white = None, black = None):
         synthesizeData(outparam, player1, player2, k, weights)
     print("Game Over")
 
+# Main structure
 if __name__ == "__main__": #Input = pruningTests.py playerW playerB material position threat iterations
     if len(sys.argv) > 7 or len(sys.argv) < 6:
         raise(Exception("Error: incorrect number of arguments: " + str(len(sys.argv))))
