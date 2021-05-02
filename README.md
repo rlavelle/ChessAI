@@ -1,6 +1,5 @@
 # B552FinalProject
 
-# Running the opening files
 ## Tournament files
 First we have the `tournament_base.py` file, this can be ran with 
 ```
@@ -40,3 +39,46 @@ Lastly we have the actual `opening.py` file which contains the case-based retrie
 python3 opening.py
 ```
 As a test the output will make the moves `c4` then `c6`, print the board, then the `OpenAI` will find the next move in the sequence and return it and print the board. This class is mainly used within the `player.py` file for generating opening moves before switching over to the `PruningPlayer`. The output is also timed, and as can be seen its much faster than searching in the tree.
+
+## Running the Head-to-Head Files
+Generic head-to-head matches between an AI player and human player can be accessed via
+
+```
+python3 driver.py AImode AIcolor AIdepth
+```
+This command will run a single game of chess in the terminal program using an ASCII board to display the position.  Basic output text will track the thought process of Base or Pruning AI players.  The human player will be prompted to enter a chess move via algebraic notation (e.g., e4 or Nf3), and the process will continue until the game is completed or terminated by the player on their move.
+
+Arguments:
+- AImode: 0 = RandomPlayer, 1 = BasePlayer, 2 = PruningPlayer
+- AIcolor: w = white, b = black
+- AIdepth: an integer corresponding with the maximum depth for searching the minimax tree
+
+Alternatively, this file may also be called using the following:
+
+```
+python3 driver.py "boardState" square
+```
+
+This is mostly a debugging feature but will evaluate the exchange outlook for the turn player on the given square in the board designated by the boardState FEN (a special string representation that the chess module uses).
+
+Arguments:
+- boardState: FEN board representation (must be surrounded in quotes as it has spaces)
+- square: algebraic notation of the square in question
+
+## Running Head-to-Head Test Files
+This is an expanded version of driver.py that allows for AI vs. AI play an incorporates data transcription into csv files (the code assumes that a subdirectory called "Zach_data" is available).  The code is activated using:
+
+```
+python3 pruningTests.py white black material position threat iterations
+```
+
+And will play white against black for the given number of iterations using the provided heuristic weights for any AI player.  Non-opening moves are recorded into a csv file along with pertinent data (see outputs PDF for example).
+
+Arguments:
+- white: player = human, random = RandomPlayer, base = BasePlayer, pruning = PruningPlayer
+- black: player = human, random = RandomPlayer, base = BasePlayer, pruning = PruningPlayer
+- material, position, threat: corresponding heuristic weights
+- iteration: the number of iterations to run the program
+
+## Notes on the dataHelpers functions
+These functions exist to create the analysis.csv file and to recreate endgame states for human analysis.  While this file likely isn't very informative on its own to run, it can be run directly from the terminal and can produce the analysis.csv output file, containing mean and standard deviation information for individual players across tests.
