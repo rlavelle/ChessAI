@@ -82,3 +82,17 @@ Arguments:
 
 ## Notes on the dataHelpers functions
 These functions exist to create the analysis.csv file and to recreate endgame states for human analysis.  While this file likely isn't very informative on its own to run, it can be run directly from the terminal and can produce the analysis.csv output file, containing mean and standard deviation information for individual players across tests.
+
+## Running Evaluations in Terminal
+In ```eval_gamefile.py```, you can call the evaluation function by running this code:
+
+```python.exe .\eval_gamefile.py pgn_file depth(int) eval_type(rule or base) iterative(True or False) ```
+
+For example, it may look like this:
+
+```python.exe .\eval_gamefile.py .\games\lowgame1.pgn 4 rule False``` which calls the lowgame1.pgn file and runs the PruningPlayer on depth 4, iterative mode off.
+
+### Running on Jupyter Notebook; Comparing with Stockfish
+In eval_pickle.pdf, the outputs are saved within the file. If you want to run the functions, use eval_pickle.ipynb, which you can run sequentially without modifications.
+
+Stockfish comparisons are also made in this file. 
