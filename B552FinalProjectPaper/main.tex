@@ -41,7 +41,7 @@ Despite a relatively simple rule set, concerning 16 pieces on a 8x8 square board
     \label{minimax}
 \end{figure}
 
-A necessary prerequisite to our research is understanding the minimax Algorithm. This is a traditional and classic game playing AI method for two player, ``zero-sum" games (i.e., one wins, and the other loses). We as humans plan our move based on what we think will be a good move, but we also consider how the opponent might respond, then we think about how we might respond to that and so on. The interesting facet here is that we are not imagining every possible move, we look at the board, see a few good moves, then employ that mental method for those moves. This is inherently very hard for computers but very simple for humans.  Minimax works the same way, however it explores \textit{everything}. It takes in a state, and then performs all possible moves, then does the same thing for each created state, up until a certain depth limit or when a terminal state is reached (win,loss,draw). When the depth limit is reached a heuristic function is called to estimate how good or bad a board is for the AI.  The algorithm then propagates the values of the heuristic back up the tree in a depth first search manner; max nodes pick the maximum value of their children, and min nodes pick the minimum values of their children. This results with a single relative best value and move being passed up the tree to the root node. An example minimax tree can be seen in Figure \ref{minimax}. For this tree the optimal move would be B1, since the value 5 would be propagated to the min node, and the other nodes return smaller scores.
+Thus, a necessary prerequisite to our research is understanding the minimax Algorithm. This is a traditional and classic game playing AI method for two player, ``zero-sum" games (i.e., one wins, and the other loses). We as humans plan our move based on what we think will be a good move, but we also consider how the opponent might respond, then we think about how we might respond to that and so on. The interesting facet here is that we are not imagining every possible move--we look at the board, see a few good moves, then employ that mental method for those moves. This is inherently very hard for computers but very simple for humans.  Minimax works the same way; however it explores \textit{everything}. It takes in a state, and then performs all possible moves, then does the same thing for each created state, up until a certain depth limit or when a terminal state is reached (win,loss,draw). When the depth limit is reached a heuristic function is called to estimate how good or bad a board is for the AI.  The algorithm then propagates the values of the heuristic back up the tree in a depth first search manner; max nodes pick the maximum value of their children, and min nodes pick the minimum value of their children. This results with a single relative best value and move being passed up the tree to the root node. An example minimax tree can be seen in Figure \ref{minimax}. For this tree the optimal move would be B1, since the value 5 would be propagated to the min node, and the other nodes return smaller scores.
 
 However, this is a lot of states to visit and compute heuristic values for if the game has a large branching factor like chess. There is a classic optimization to this problem however, the alpha-beta pruning method. The method has three simple rules: if we are at a max node, we can update alpha but only increase it; if we are at a min node, we can update beta but only decrease it; and finally if at any node $\alpha \geq \beta$ then we prune, meaning we no longer consider children from that node. The intuition behind this method is that if an alpha value is propagated up to a max node, and a min node below it propagates up a beta value that is smaller, then its nonsensical to continue searching the children of that min node, since no move from that branch will ever be accepted by the above parent max node--it has already found a better move. This optimization of pruning is very important in chess, since it allows a deeper search in the tree through the exploration of less states. We propose methods on top of this optimization that can prune even more states, thus allowing us to explore the space faster than by just using alpha-beta pruning for game playing and board state evaluation. 
 
@@ -60,7 +60,7 @@ In terms of works not related to chess, Bradtke and Lehnert \cite{bradtke-lehner
 
 \section{Model Overview}
 \subsection{Heuristic Creation}
-\subsubsection{Heuristic Development}The heuristic is a vital part of any AI algorithm, it allows the programmer to insert knowledge about the domain into the algorithm, thus allowing it to preform better than an uninformed algorithm.
+\subsubsection{Heuristic Development}The heuristic is a vital part of any AI algorithm, as it allows the programmer to insert knowledge about the domain into the algorithm, thus allowing it to preform better than an uninformed algorithm.
 %For chess, the heuristic or evaluation function is used to evaluate boards that appear at the max depth of the minimax search tree. The values that the heuristic returns are very integral to the AIs performance, therefore we must devise a simple yet intelligent heuristic, the trade off between complexity and run time should be balanced well.  
 The heuristic we derived uses three simple but important properties of the chess board which are combined in a weighted sum to produce an overall simple, yet intelligent heuristic:
 
@@ -89,7 +89,7 @@ This sub-heuristic can give us a good, simple window into who is ahead in the ga
     \label{materialValues}
 \end{table}
 
-The piece positioning sub-heuristic evaluates how well-positioned all our pieces on the board are. The values for this sub heuristic come from piece square tables (PST); a sample table for a bishop can be found in table \ref{pst}. Each piece has a unique PST that is weighted such that pieces should gradually attempt to move to certain positions with better cover, better attacking position, and more available moves. For example, pawns should attempt to advance to the end of the board, knights should attempt to stay in the middle of the board and so on. For the purpose of this sub-heuristic, we do not care about opposing piece positioning, and define the heuristic as: 
+The piece positioning sub-heuristic evaluates how well-positioned all our pieces on the board are. The values for this sub heuristic come from piece square tables (PST); a sample table for a bishop can be found in table \ref{pst}. Each piece has a unique PST that is weighted such that pieces should gradually attempt to move to certain positions with better cover, better attacking position, and more available moves. For example, pawns should attempt to advance to the end of the board, knights should attempt to stay in the middle of the board and so on. For the purpose of this sub-heuristic, we do not care about opposing piece positioning, and define the heuristic as:
 $$
 h_{pos} = \sum_{p \in white}\text{PST}(p)
 $$
@@ -108,6 +108,7 @@ $$
     \caption{White Bishop Piece Square Table}
     \label{pst}
 \end{table}
+
 The piece threat sub heuristic measures how many of our AI's pieces are being threatened versus how many pieces our AI is threatening. This sub-heuristic hopefully allows our AI to play more dynamic offense and defense by being sensitive to this threats-threatened ratio, and it is defined as follows:
 $$
 h_{threat} = \sum_{p \in black}\text{threat}(p) - \sum_{p \in white}\text{threat}(p)
@@ -121,11 +122,11 @@ $$
 Where $i \in \{mat,pos,threat\}$. These weights $c_i$ can either be chosen using previous knowledge of the importance of each sub heuristic, or they can be learned.  Different weighting strategies are explored in our evaluation section.
 
 \subsubsection{Learning Heuristic Weights}
-To learn the weights $c_i$ for the heuristic, we chose to go with a genetic algorithm approach. The intuition for genetic algorithms is similar to how evolution works, in the beginning a random set of features are given to each agent, and through time (generations) and breeding (crossover and mutation) the fittest of the agents carry on, breeding better and better children and hopefully leading to a near-optimal set of parameters.
+To learn the weights $c_i$ for the heuristic, we chose to go with a genetic algorithm approach. The intuition for genetic algorithms is similar to how evolution works--in the beginning a random set of features are given to each agent, and through time (generations) and breeding (crossover and mutation) the fittest of the agents carry on, breeding better and better children and hopefully leading to a near-optimal set of parameters.
 
-This experiment was done using ten generations of agents with five agents per generation. At the beginning, each agent was assigned a random set of weights for the heuristic, and then they played a round robin tournament (each agent plays each other agent). After the round robin was over, the three agents with the most amount of wins were selected as the fittest, these agents were then selected to breed.
+This experiment was done using ten generations of agents with five agents per generation. At the beginning, each agent was assigned a random set of weights for the heuristic, and then they played a round robin tournament (each agent plays each other agent). After the round robin was over, the three agents with the most amount of wins were selected as the fittest; these agents were then selected to breed.
 
-Breeding works through crossover and mutation. Our crossover probability was $p=0.5$, i.e there is a 50\% chance that the child of agent A and agent B gets passed down $c_{mat}$ from agent A. this property carries over for both $c_{pos}$ and $c_{threat}$. However there is also a chance at mutation after the crossover happens, this is a vital part of evolution, given a small chance ($p=0.05$) a child has a brand new weight $c_i$ generated. This 5\% chance is applied to each of the three weights. After the 10 generations, all five winners are returned, and the top winners weights are selected to be used as the optimal heuristic weights for our pruning AI. 
+Breeding works through crossover and mutation. Our crossover probability was $p=0.5$, i.e there is a 50\% chance that the child of agent A and agent B gets passed down $c_{mat}$ from agent A. this property carries over for both $c_{pos}$ and $c_{threat}$. However there is also a chance at mutation after the crossover happens, this is a vital part of evolution. Given a small chance ($p=0.05$), a child has a brand new weight $c_i$ generated. This 5\% chance is applied to each of the three weights. After the 10 generations, all five winners are returned, and the top winners weights are selected to be used as the optimal heuristic weights for our pruning AI. 
 
 \subsection{Case-Based Retrieval for Opening Play}
 As of the most important parts of the chess game, the opening sequence is a heavily studied area, and any proficient player will have a few different opening sequences that they prefer to use. The opening sequences are used for general board setup before going into the mid game and generally facilitates strong piece positioning for attacking and defending.
@@ -172,6 +173,73 @@ This final model generalizes and simplifies the rules observed in the hierarchy 
 Notably, the last of the four rules acts as a check on the other three to avoid losing exchanges, and it provides a simple framework for pruning the min player in the minimax structure.  We might be able to assume that the same pruning rules apply for both the min and max players, but a more relaxed strategy is used for the min player in case this assumption is incorrect.  This pruning strategy strikes a good balance between pruning aggressively but not excessively, especially in the context of the chosen heuristic.  Pruning performance against other approaches is evaluated in the following section, along with some surprising interplay with other aspects of this research.
 
 \section{Results and Discussion}
+
+\subsection{Board State Evaluation}
+We evaluated the performance of our algorithm by comparing the evaluation scores between our proposed Pruning Player and the algorithm without modifications, which we call Base Player.  The evaluation scores are calculated by calling the Players to recommend the best move for every move played and get the heuristic scores of the state that they calculated using the minimax algorithm. The changes in these evaluation scores are overlaid in a line graph to compare the scoring for both players (figure \ref{score_timeEval}).
+
+Since there are different levels of play in chess games, we made sure to test games of varying levels of complexity; specifically, we picked three different chess games played by people in \url{https://lichess.org} as examples. For game selection, we used the average rating score of the players who played these games. The low level was classified when the average Elo score was in the range between 1000 and 1500; mid level was in the range 1500 to 1900, and high level in scores above 1900. We settled with games that lasted for at least 15 moves and reached a definite conclusion (i.e., no abandoned games).
+
+Notably, as another one of the pruning algorithm’s main goals is to cut down on runtime, we also compared the cumulative time taken for each of the algorithms' evaluations (figures \ref{score_timeEval}, \ref{timeEval}).  Lastly, we set the depth factor to 4 for both algorithms in order for both algorithms to run in a reasonable amount of time.
+
+\begin{figure*}
+    \centering
+
+    \includegraphics[scale= 0.38]{low_game_eval.jpg}
+    \includegraphics[scale= 0.38]{mid_game_eval.jpg}
+    \includegraphics[scale= 0.38]{high_game_eval.jpg}
+
+    \includegraphics[scale= 0.38]{low_game_time.jpg}
+    \includegraphics[scale= 0.38]{mid_game_time.jpg}
+    \includegraphics[scale= 0.38]{high_game_time.jpg}
+  
+    \caption{Comparison made between BasePlayer and PruningPlayer. Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating case-based opening retrieval.} 
+    \label{score_timeEval}
+\end{figure*}
+
+\begin{figure}
+    \center
+
+    % \includegraphics[width=0.48\textwidth]{all_game_time.jpg}
+    \includegraphics[scale = 0.4]{all_game_time.jpg}
+    
+  
+    \caption{Comparison of evaluation time in all the three games.}
+    \label{timeEval}
+\end{figure}
+
+\begin{table}[t]
+    \centering
+    \resizebox{0.48\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|} \hline
+        heuristic &  material value & positioning & threats\\\hline
+        weights & 9.752 &  0.111 & 3.530\\\hline
+    \end{tabular}
+    }
+    \caption{Learned Heuristic Weights}
+    \label{weights}
+\end{table}
+
+\begin{table}[]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+ & \multicolumn{2}{l|}{Number of Moves} \\ \hline
+Type & Sorted & Not Sorted \\ \hline
+Pruning v. Pruning & 13.0 & 2.0 \\ \hline
+Pruning v. Random & 5.8 & 5.2 \\ \hline
+Pruning v. Base & 12.0 & 8.0 \\ \hline
+\end{tabular}
+\caption{Average Number of Moves Made by OpenAI}
+\label{openings}
+\end{table}
+
+
+
+\subsection{Heuristic Learning Performance}
+We ran the tournament described in the methods section under three different conditions.  First, we used the base AI (which preforms no pruning) as the agent AI; for this tournament we selected any winner from the round robin as a candidate for reproduction, which was done in the hope of eliminating any very poor preforming AIs that did not win any games. Next we ran the tournament with the same setup, but using the pruning AI as our agent AI. Finally we ran a tournament using the described top three winner setup with the pruning AI as the agent AI. All three sets of weights were then put into a large round robin where we also included our knowledge chosen weights as an agent. This tournament ran for 64 games and the best heuristic weights are displayed in table \ref{weights}. It should be noted that these tournaments took a very long time to run--on average a pruning AI playing another pruning AI takes around 15 minutes. So the above described tournament played out a total of 250 games, taking around two and a half days to converge. The final round robin played out quicker in around 16 hours.
+
+\subsection{Opening AI Performance}
+Results for average number of moves played by the opening AI before switching over to the pruning AI can be seen in table \ref{openings}; this includes averages for both before and after the adaptation of sorting the cases by sequence length. Its interesting to note here that the games for Pruning versus Pruning and Pruning versus Base alpha-beta minimax are not averages, since the same game is played every time if the weights do not change.  This is due to the fact that there is no randomness within the algorithm currently. It is also interesting to note that when two pruning players play (agents who both have an opening AI component) they play out the full Sicilian Defense exchange, setting up the board very well for the rest of them game. 
 
 \begin{figure*}[tb]
     \begin{center}
@@ -241,73 +309,6 @@ Notably, the last of the four rules acts as a check on the other three to avoid 
         \label{pruningEval}
     \end{center}
 \end{figure*}
-\subsection{Board State Evaluation}
-We evaluated the performance of our algorithm by comparing the evaluation scores between our proposed Pruning Player and the algorithm without modifications, which we call Base Player.  The evaluation scores are calculated by calling the Players to recommend the best move for every move played and get the heuristic scores of the state that they calculated using the minimax algorithm. The changes in these evaluation scores are overlaid in a line graph to compare the scoring for both players (figure \ref{score_timeEval}).
-
-Since there are different levels of play in chess games, we made sure to test games of varying levels of complexity; specifically, we picked three different chess games played by people in \url{https://lichess.org} as examples. For game selection, we used the average rating score of the players who played these games. The low level was classified when the average Elo score was in the range between 1000 and 1500; mid level was in the range 1500 to 1900, and high level in scores above 1900. We settled with games that lasted for at least 15 moves and reached a definite conclusion (i.e., no abandoned games).
-
-Notably, as another one of the pruning algorithm’s main goals is to cut down on runtime, we also compared the cumulative time taken for each of the algorithms' evaluations (figures \ref{score_timeEval}, \ref{timeEval}).  Lastly, we set the depth factor to 4 for both algorithms in order for both algorithms to run in a reasonable amount of time.
-
-\begin{figure*}
-    \centering
-
-    \includegraphics[scale= 0.38]{low_game_eval.jpg}
-    \includegraphics[scale= 0.38]{mid_game_eval.jpg}
-    \includegraphics[scale= 0.38]{high_game_eval.jpg}
-
-    \includegraphics[scale= 0.38]{low_game_time.jpg}
-    \includegraphics[scale= 0.38]{mid_game_time.jpg}
-    \includegraphics[scale= 0.38]{high_game_time.jpg}
-  
-    \caption{Comparison made between BasePlayer and PruningPlayer. Top side shows the evaluation scores determined by the Players. Note the smoother evaluation scores made by PruningPlayer on all three of the games. Bottom side shows the cumulative runtime of these Players. Note the flat lines on the Mid Elo and High Elo, indicating case-based opening retrieval.} 
-    \label{score_timeEval}
-\end{figure*}
-
-\begin{figure}
-    \center
-
-    % \includegraphics[width=0.48\textwidth]{all_game_time.jpg}
-    \includegraphics[scale = 0.4]{all_game_time.jpg}
-    
-  
-    \caption{Comparison of evaluation time in all the three games.}
-    \label{timeEval}
-\end{figure}
-
-\begin{table}[t]
-    \centering
-    \resizebox{0.48\textwidth}{!}{
-    \begin{tabular}{|c|c|c|c|} \hline
-        heuristic &  material value & positioning & threats\\\hline
-        weights & 9.752 &  0.111 & 3.530\\\hline
-    \end{tabular}
-    }
-    \caption{Learned Heuristic Weights}
-    \label{weights}
-\end{table}
-
-\begin{table}[]
-\centering
-\begin{tabular}{|l|l|l|}
-\hline
- & \multicolumn{2}{l|}{Number of Moves} \\ \hline
-Type & Sorted & Not Sorted \\ \hline
-Pruning v. Pruning & 13.0 & 2.0 \\ \hline
-Pruning v. Random & 5.8 & 5.2 \\ \hline
-Pruning v. Base & 12.0 & 8.0 \\ \hline
-\end{tabular}
-\caption{Average Number of Moves Made by OpenAI}
-\label{openings}
-\end{table}
-
-
-
-\subsection{Heuristic Learning Performance}
-We ran the tournament described in the methods section under three different conditions.  First, we used the base AI (which preforms no pruning) as the agent AI; for this tournament we selected any winner from the round robin as a candidate for reproduction, which was done in the hope of eliminating any very poor preforming AIs that did not win any games. Next we ran the tournament with the same setup, but using the pruning AI as our agent AI. Finally we ran a tournament using the described top three winner setup with the pruning AI as the agent AI. All three sets of weights were then put into a large round robin where we also included our knowledge chosen weights as an agent. This tournament ran for 64 games and the best heuristic weights are displayed in table \ref{weights}. It should be noted that these tournaments took a very long time to run--on average a pruning AI playing another pruning AI takes around 15 minutes. So the above described tournament played out a total of 250 games, taking around two and a half days to converge. The final round robin played out quicker in around 16 hours.
-
-\subsection{Opening AI Performance}
-Results for average number of moves played by the opening AI before switching over to the pruning AI can be seen in table \ref{openings}; this includes averages for both before and after the adaptation of sorting the cases by sequence length. Its interesting to note here that the games for Pruning versus Pruning and Pruning versus Base alpha-beta minimax are not averages, since the same game is played every time if the weights do not change.  This is due to the fact that there is no randomness within the algorithm currently. It is also interesting to note that when two pruning players play (agents who both have an opening AI component) they play out the full Sicilian Defense exchange, setting up the board very well for the rest of them game. 
-
 
 \subsection{Pruning Performance}
 We evaluated the pruning strategies against the Base Player through a series of head-to-head games while varying heuristic weights for each game.  The combinations considered are uniform (1.0, 1.0, 1.0), base (2.466, 0.974, 3.998; determined from the tournament of base players), pruning (2.466, 0.300, 0.120; determined from the tournament of pruning players), handmade (1, 0.02, 0.05; generated by Zach during preliminary testing), and winning (9.752, 0.111, 3.530; the best result as in table 3).  The Pruning and Base Players also play against a human player (Zach) as a comparison.  All games are played once (i.e., since the minimax algorithm is deterministic, the is no randomness in move selection), and the approaches are evaluated based on their per-state runtime and overall performance; ideally, this captures the trade-off between extra computation time and state-visiting advantages for the pruning algorithm, as well as the relative strength of the algorithms against one another (i.e., which one wins, or which one has the advantage if the game lasts longer than 150 moves).  Per-state runtime is calculated from the total time taken by minimax divided by the number of states visited less the number of dynamic programming hits.  Results are summarized in figure \ref{pruningEval}.
