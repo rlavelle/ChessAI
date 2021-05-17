@@ -1,10 +1,8 @@
-# B552FinalProject
+# Applying CBR Retrieval and Rule-Based Heuristics to Improve Alpha-Beta Search in Chess
 # Josep Han, Rowan Lavelle, Zachary Wilkerson
-# May 1, 2021
 
 ## Notes on file organization
-The files for submission are organized as follows:
-- finalPaper.pdf is our AAAI-formatted paper
+The files are organized as follows:
 - fullOutputs.pdf is our data (all of it); sections are:
 	1) Weight-generation tournament output (pgs. 1-5)
 	2) Head-to-head tests (pgs. 6-194; this includes move-by-move raw data, so the important summary info containing the average per-state runtime with standard deviations is on pgs. 6-8)
