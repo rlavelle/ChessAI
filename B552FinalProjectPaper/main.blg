@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 5 items.
+The style file: aaai.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Database file #1: references.bib
+Warning--empty booktitle in anthony-et-al2017
+Warning--empty booktitle in bradtke-lehnert88
+Warning--empty booktitle in david-et-al2016
+Warning--empty booktitle in Kerner94
+Warning--empty journal in silver-et-al17
+You've used 7 entries,
+            2568 wiz_defined-function locations,
+            617 strings with 5581 characters,
+and the built_in function-call counts, 3109 in all, are:
+= -- 317
+> -- 144
+< -- 3
++ -- 50
+- -- 50
+* -- 238
+:= -- 504
+add.period$ -- 33
+call.type$ -- 7
+change.case$ -- 53
+chr.to.int$ -- 7
+cite$ -- 12
+duplicate$ -- 126
+empty$ -- 208
+format.name$ -- 64
+if$ -- 650
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 7
+newline$ -- 43
+num.names$ -- 21
+pop$ -- 57
+preamble$ -- 1
+purify$ -- 60
+quote$ -- 0
+skip$ -- 105
+stack$ -- 0
+substring$ -- 129
+swap$ -- 34
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 56
+warning$ -- 5
+while$ -- 22
+width$ -- 8
+write$ -- 91
+(There were 5 warnings)

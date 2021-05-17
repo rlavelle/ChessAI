@@ -1,0 +1,92 @@
+RNBQKBNRPPPPPPPP................................pppppppprnbqkbnr
+
+RNBQKBNRPPPPPP.P..............P.................pppppppprnbqkbnr
+
+
+RNBQKBNRPP..PPPP..........PP...................pppppppp.rnbqkbnr
+
+RNB.KBNRPP..PPPP..........PP.........p........Q.ppppp.pprnbqkbnr
+
+RNB.KBNRPPPP.PPP............P..........Q........pppppppprnbqkbnr
+
+RN..KB..PPP.PPPR...Q....p..P.B..qp..p..P..p........p.Npprnb.kbnr
+
+RN..KB.RPPP.PPP....Q....p..P.B..qp..p..P..p........p.Npprnb.kbnr
+
+R.B.KBNRPPPP.PPP..N.P...........p......Q..p......p.ppppprnbqkbnr
+
+RNB.KBNRPPPP.PPP....P..................Qp.p......p.ppppprnbqkbnr
+
+P...............................................................
+R...............................................................
+B...............................................................
+Q...............................................................
+K...............................................................
+N...............................................................
+
+...R...RP...BPPP.Kq.P....p..........p.....p..pQp.p..k.p.rn...bnr
+
+R.B.K.NR.PPP.P..P.NBP...p...pQPP.p.p......pb.p........pprnbqk.nr
+Bishop killed itself? lol
+
+R.B.K.NR
+.PPP.P..
+P.NBP...
+p...pQPP
+.p.p....
+..pb.p..
+......pp
+rnbqk.nr
+Queen didn't try and run
+
+parent
+R.B.K.NR.PPP.P..P.NBP...p...pQPP.p.p......pb.p........pprnbqk.nr
+
+
+child
+R.B.K.NR.PPP.P..P.NBP...p...Q.PP.p.p......pb.p........pprnbqk.nr
+
+R.B.K.NR.PPP.P..P.N.P...p.B.pQPP.p.p......pb.p........pprnbqk.nr
+
+.RB....RPPP.KPN.....P.P.pppPp..P...q.pQ....p..pb.......prnb.k.nr
+Queen killed itself
+
+.RB....RPPPPKPN.....P.P.ppp.p..P...N.p.Q..qp..........pprnb.kbnr
+Test black for our AI
+
+R...q...PPPB......K.P.....BP...Pp.......nQ...pp....pp..pr.b.kbnr
+Rook didnt take queen
+
+R . B . . . . R
+. . K . . P q P
+. . P . P . . .
+P . . . . . . .
+. . . . . p . .
+. . . . . . . .
+. . . . . . p p
+. . . . k b n r
+
+R . B . . . . R
+. . K . . P q P
+. . P . P . . .
+P . . . . . . .
+. . . . . p . .
+. . . . . . . .
+. . . . . . p p
+. . . . k b n r
+
+
+
+....k......R....P.K..............................R.N............
+
+
+
+Wins: silo 25565
+Loss: sabra 12345
+Error: silo 5289
+
+...K...........r..p.....p............p.............k..b.......n.
+
+
+
+.........R............K............k..........................R.

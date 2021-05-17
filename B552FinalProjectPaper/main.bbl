@@ -1,0 +1,51 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Anthony, Tian, and
+  Barber}{2017}]{anthony-et-al2017}
+Anthony, T.; Tian, Z.; and Barber, D.
+\newblock 2017.
+\newblock Thinking fast and slow with deep learning and tree search.
+
+\bibitem[\protect\citeauthoryear{Bradtke and Lehnert}{1988}]{bradtke-lehnert88}
+Bradtke, S., and Lehnert, W.~G.
+\newblock 1988.
+\newblock Some experiments with case-based search.
+\newblock  133--138.
+
+\bibitem[\protect\citeauthoryear{Campbell, Hoane, and
+  Hsu}{2002}]{campbell-et-al2002}
+Campbell, M.; Hoane, A.; and Hsu, F.-h.
+\newblock 2002.
+\newblock Deep blue.
+\newblock {\em Artificial Intelligence} 134:57--83.
+
+\bibitem[\protect\citeauthoryear{David, Netanyahu, and
+  Wolf}{2016}]{david-et-al2016}
+David, E.; Netanyahu, N.; and Wolf, L.
+\newblock 2016.
+\newblock Deepchess: End-to-end deep neural network for automatic learning in
+  chess.
+\newblock  88--96.
+
+\bibitem[\protect\citeauthoryear{Grünke}{2020}]{grunke2020}
+Grünke, P.
+\newblock 2020.
+\newblock Chess, artificial intelligence, and epistemic opacity.
+\newblock {\em Információs Társadalom} 19:7.
+
+\bibitem[\protect\citeauthoryear{Kerner}{1994}]{Kerner94}
+Kerner, Y.
+\newblock 1994.
+\newblock Case-based evaluation in computer chess.
+\newblock  240--254.
+
+\bibitem[\protect\citeauthoryear{Silver \bgroup et al\mbox.\egroup
+  }{2017}]{silver-et-al17}
+Silver, D.; Hubert, T.; Schrittwieser, J.; Antonoglou, I.; Lai, M.; Guez, A.;
+  Lanctot, M.; Sifre, L.; Kumaran, D.; Graepel, T.; Lillicrap, T.; and
+  Hassabis, D.
+\newblock 2017.
+\newblock Mastering chess and shogi by self-play with a general reinforcement
+  learning algorithm.
+
+\end{thebibliography}
